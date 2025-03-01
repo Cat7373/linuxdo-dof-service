@@ -31,11 +31,15 @@ class LoginController {
    * LinuxDo 登录
    * GET /api/login/linuxdo
    */
-  @CheckInput('code', 'body')
-  @CheckInput('state', 'body')
+  @CheckInput('code', 'path')
+  @CheckInput('state', 'path')
   async linuxdo(ctx: Context): Promise<ResultObj> {
     // 参数处理
     const { code, state } = koaFirstQueryParam(ctx.query)
+
+    if (state !== 'linuxdodnf') {
+      return useResult().fail('非法请求')
+    }
 
     // 尝试获取用户 token
     const tokenResp = await fetchLinuxDoToken(code!)
