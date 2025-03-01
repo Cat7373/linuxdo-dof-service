@@ -59,7 +59,7 @@ class SignInController {
       // 进行签到
       await usePrisma().userSignInRecord.upsert({
         where: { uid },
-        update: { days: [...(signInRecord!.days as number[]), day] },
+        update: { days: [...((signInRecord?.days as number[]) ?? []), day] },
         create: { uid, days: [day] },
       })
 
