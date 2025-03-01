@@ -69,8 +69,8 @@ class LoginController {
     ctx.session!['uid'] = user.id
     ctx.session!['linuxDoUid'] = user.linuxDoUid
 
-    // 借用查询登陆信息接口，填充登陆结果
-    return await this.info(ctx)
+    // 重定向到首页
+    ctx.redirect('/')
   }
 
   /**
