@@ -5,6 +5,7 @@ import { usePrisma, usePrismaTx } from '../../db/index.js'
 import { useUserTool } from '../../db/tool/user.js'
 import md5 from 'md5'
 import config from '../../config/index.js'
+import { useKnex } from '../../db/knex.js'
 
 // 注册 DNF 账号请求数据
 interface RegisterDnfAccountBody { dnfUsername: string, dnfPassword: string }
@@ -40,14 +41,14 @@ class UserController {
 
       // 注册账号
       const md5Pwd = md5(dnfPassword)
-      await usePrisma().$queryRaw `INSERT INTO d_taiwan.accounts(accountname, password, VIP) VALUES (${dnfUsername}, ${md5Pwd}, '')`
-      const dnfUId = ((await usePrisma().$queryRaw `SELECT UID FROM d_taiwan.accounts WHERE accountname = ${dnfUsername}`) as any)[0].UID as number
-      await usePrisma().$queryRaw `INSERT INTO d_taiwan.member_info(m_id, user_id) VALUES (${dnfUId}, ${dnfUId})`
-      await usePrisma().$queryRaw `INSERT INTO d_taiwan.member_white_account(m_id) VALUES (${dnfUId})`
-      await usePrisma().$queryRaw `INSERT INTO taiwan_login.member_login(m_id) VALUES (${dnfUId})`
-      await usePrisma().$queryRaw `INSERT INTO taiwan_billing.cash_cera(account, cera, mod_tran, mod_date, reg_date) VALUES (${dnfUId}, 0, 0, NOW(), NOW())`
-      await usePrisma().$queryRaw `INSERT INTO taiwan_billing.cash_cera_point(account, cera_point, mod_date, reg_date) VALUES (${dnfUId}, ${config.registerCash}, NOW(), NOW())`
-      await usePrisma().$queryRaw `INSERT INTO taiwan_cain_2nd.member_avatar_coin(m_id) VALUES (${dnfUId})`
+      await await useKnex().raw(`INSERT INTO d_taiwan.accounts(accountname, password, VIP) VALUES (${dnfUsername}, ${md5Pwd}, '')`)
+      const dnfUId = (await useKnex().raw(`SELECT UID FROM d_taiwan.accounts WHERE accountname = ${dnfUsername}`))[0][0].UID as number
+      await await useKnex().raw(`INSERT INTO d_taiwan.member_info(m_id, user_id) VALUES (${dnfUId}, ${dnfUId})`)
+      await await useKnex().raw(`INSERT INTO d_taiwan.member_white_account(m_id) VALUES (${dnfUId})`)
+      await await useKnex().raw(`INSERT INTO taiwan_login.member_login(m_id) VALUES (${dnfUId})`)
+      await await useKnex().raw(`INSERT INTO taiwan_billing.cash_cera(account, cera, mod_tran, mod_date, reg_date) VALUES (${dnfUId}, 0, 0, NOW(), NOW())`)
+      await await useKnex().raw(`INSERT INTO taiwan_billing.cash_cera_point(account, cera_point, mod_date, reg_date) VALUES (${dnfUId}, ${config.registerCash}, NOW(), NOW())`)
+      await await useKnex().raw(`INSERT INTO taiwan_cain_2nd.member_avatar_coin(m_id) VALUES (${dnfUId})`)
 
       // 更新用户信息
       await usePrisma().user.update({
@@ -79,7 +80,7 @@ class UserController {
 
       // 修改密码
       const md5Pwd = md5(dnfPassword)
-      await usePrisma().$queryRaw `UPDATE d_taiwan.accounts SET password = ${md5Pwd} WHERE UID = ${user.dnfId}`
+      await useKnex().raw(`UPDATE d_taiwan.accounts SET password = ${md5Pwd} WHERE UID = ${user.dnfId}`)
 
       // 返回结果
       return useResult().success()

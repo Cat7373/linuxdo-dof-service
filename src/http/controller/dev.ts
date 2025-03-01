@@ -12,7 +12,7 @@ class DevController {
    * GET /api/dev/dev
    */
   async dev(ctx: Context): Promise<ResultObj<any>> {
-    const res = await useKnex().raw(`SELECT UID FROM d_taiwan.accounts WHERE accountname = 'Cat73'`)
+    const res = (await useKnex().raw(`SELECT UID FROM d_taiwan.accounts WHERE accountname = 'Cat73'`))[0][0].UID
 
     return useResult().success(res)
   }
