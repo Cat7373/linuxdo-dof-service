@@ -3,7 +3,6 @@ import { ResultObj, useResult } from '../../util/result.js'
 import { CheckInput, useSession } from '../util/index.js'
 import { usePrisma, usePrismaTx } from '../../db/index.js'
 import { useUserTool } from '../../db/tool/user.js'
-import md5 from 'md5'
 import config from '../../config/index.js'
 import { useKnex, useKnexTransaction } from '../../db/knex.js'
 
@@ -22,7 +21,7 @@ class UserController {
    * POST /api/user/registerDnfAccount
    */
   @CheckInput('dnfUsername', 'body', { len: [3, 50], type: 'string', regexp: /^[a-zA-Z0-9]+$/ })
-  @CheckInput('dnfPassword', 'body', { len: [6, 50], type: 'string', regexp: /^[a-zA-Z0-9]+$/ })
+  @CheckInput('dnfPassword', 'body', { len: [32, 32], type: 'string', regexp: /^[a-z0-9]{32}$/ })
   async registerDnfAccount(ctx: Context): Promise<ResultObj> {
     // 参数处理
     const { dnfUsername, dnfPassword } = ctx.request.body as RegisterDnfAccountBody
@@ -42,8 +41,7 @@ class UserController {
       // 注册账号
       let dnfUId = 0
       await useKnexTransaction(async () => {
-        const md5Pwd = md5(dnfPassword)
-        await useKnex().raw(`INSERT INTO d_taiwan.accounts(accountname, password, VIP) VALUES ('${dnfUsername}', '${md5Pwd}', '')`)
+        await useKnex().raw(`INSERT INTO d_taiwan.accounts(accountname, password, VIP) VALUES ('${dnfUsername}', '${dnfPassword}', '')`)
         dnfUId = (await useKnex().raw(`SELECT UID FROM d_taiwan.accounts WHERE accountname = '${dnfUsername}'`))[0][0].UID as number
         await useKnex().raw(`INSERT INTO d_taiwan.member_info(m_id, user_id) VALUES (${dnfUId}, ${dnfUId})`)
         await useKnex().raw(`INSERT INTO d_taiwan.member_white_account(m_id) VALUES (${dnfUId})`)
@@ -68,7 +66,7 @@ class UserController {
    * 修改 DNF 密码
    * POST /api/user/changeDnfPassword
    */
-  @CheckInput('dnfPassword', 'body', { len: [6, 50], type: 'string', regexp: /^[a-zA-Z0-9]+$/ })
+  @CheckInput('dnfPassword', 'body', { len: [32, 32], type: 'string', regexp: /^[a-z0-9]{32}$/ })
   async changeDnfPassword(ctx: Context): Promise<ResultObj> {
     // 参数处理
     const { dnfPassword } = ctx.request.body as ChangeDnfPasswordBody
@@ -81,8 +79,7 @@ class UserController {
     }
 
     // 修改密码
-    const md5Pwd = md5(dnfPassword)
-    await useKnex().raw(`UPDATE d_taiwan.accounts SET password = ${md5Pwd} WHERE UID = ${user.dnfId}`)
+    await useKnex().raw(`UPDATE d_taiwan.accounts SET password = ${dnfPassword} WHERE UID = ${user.dnfId}`)
 
     // 返回结果
     return useResult().success()
