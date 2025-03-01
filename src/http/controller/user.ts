@@ -79,7 +79,7 @@ class UserController {
     }
 
     // 修改密码
-    await useKnex().raw(`UPDATE d_taiwan.accounts SET password = ${dnfPassword} WHERE UID = ${user.dnfId}`)
+    await useKnex().raw(`UPDATE d_taiwan.accounts SET password = '${dnfPassword}' WHERE UID = ${user.dnfId}`)
 
     // 返回结果
     return useResult().success()
