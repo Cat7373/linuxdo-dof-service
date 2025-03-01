@@ -1,6 +1,7 @@
 import { AxiosResponse } from 'axios'
 import fetch from '../util/request.js'
 import { useEnv } from '../util/env.js'
+import qs from 'qs'
 
 /**
  * LinuxDo 通过 code 获取 Token 接口的响应结构
@@ -41,15 +42,18 @@ export interface LinuxDoUserInfoResp {
  * @param code 授权码
  */
 export async function fetchLinuxDoToken(code: string): Promise<AxiosResponse<LinuxDoTokenResp>> {
+  const data = {
+    grant_type: 'authorization_code',
+    code,
+  }
+
   return await fetch({
     url: 'https://connect.linux.do/oauth2/token',
     headers: {
+      'content-type': 'application/x-www-form-urlencoded',
       'Authorization': `Basic ${Buffer.from(`${useEnv().linuxDoClientId}:${useEnv().linuxDoClientSecret}`).toString('base64')}`,
     },
-    params: {
-      code,
-      grant_type: 'authorization_code',
-    },
+    data: qs.stringify(data),
     method: 'POST',
   })
 }
