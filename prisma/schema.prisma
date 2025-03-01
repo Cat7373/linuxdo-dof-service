@@ -4,8 +4,8 @@ generator client {
 
 datasource db {
   provider          = "mysql"
-  url               = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  url               = env("PRISMA_DATABASE_URL")
+  shadowDatabaseUrl = env("PRISMA_SHADOW_DATABASE_URL")
 }
 
 /// 用户表

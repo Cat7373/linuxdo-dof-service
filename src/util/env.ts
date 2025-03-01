@@ -12,6 +12,9 @@ function nn(input: string | undefined) {
 
 configDotenv()
 const env = {
+  // Knex
+  knexDatabaseUrl: nn(process.env['KNEX_DATABASE_URL']),
+
   // Koa Session Secret
   httpSecret: nn(process.env['HTTP_SECRET']),
 

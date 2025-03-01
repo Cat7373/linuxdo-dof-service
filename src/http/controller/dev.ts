@@ -1,6 +1,6 @@
 import { Context } from 'koa'
 import { ResultObj, useResult } from '../../util/result.js'
-import { usePrisma } from '../../db/index.js'
+import { useKnex } from '../../db/knex.js'
 
 /**
  * 内部测试接口 - 前端不应该对接此处的任何接口
@@ -12,7 +12,7 @@ class DevController {
    * GET /api/dev/dev
    */
   async dev(ctx: Context): Promise<ResultObj<any>> {
-    const res = await usePrisma().$queryRaw`SELECT VERSION()`
+    const res = await useKnex().raw(`SELECT VERSION()`)
 
     return useResult().success(res)
   }
