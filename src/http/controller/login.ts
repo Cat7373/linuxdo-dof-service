@@ -44,13 +44,13 @@ class LoginController {
     // 尝试获取用户 token
     const tokenResp = await fetchLinuxDoToken(code!)
     if (!tokenResp.data?.access_token) {
-      return useResult().fail(`从 LinuxDo 登录失败，错误原因: ${tokenResp.data.error_description}`)
+      return useResult().fail(`从 LinuxDo 登录失败，错误原因: ${tokenResp?.data?.error_description || '未知错误'}`)
     }
 
     // 获取用户信息
     const userInfoResp = await fetchLinuxDoUserInfo(tokenResp.data.access_token)
     if (!userInfoResp.data?.id) {
-      return useResult().fail(`从 LinuxDo 获取用户信息失败，错误原因: ${userInfoResp.data.detail}`)
+      return useResult().fail(`从 LinuxDo 获取用户信息失败，错误原因: ${userInfoResp?.data?.detail || '未知错误'}`)
     }
 
     // 登录账号(若未注册则帮其注册)

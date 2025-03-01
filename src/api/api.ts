@@ -47,15 +47,19 @@ export async function fetchLinuxDoToken(code: string): Promise<AxiosResponse<Lin
     code,
   }
 
-  return await fetch({
-    url: 'https://connect.linux.do/oauth2/token',
-    headers: {
-      'content-type': 'application/x-www-form-urlencoded',
-      'Authorization': `Basic ${Buffer.from(`${useEnv().linuxDoClientId}:${useEnv().linuxDoClientSecret}`).toString('base64')}`,
-    },
-    data: qs.stringify(data),
-    method: 'POST',
-  })
+  try {
+    return await fetch({
+      url: 'https://connect.linux.do/oauth2/token',
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded',
+        'Authorization': `Basic ${Buffer.from(`${useEnv().linuxDoClientId}:${useEnv().linuxDoClientSecret}`).toString('base64')}`,
+      },
+      data: qs.stringify(data),
+      method: 'POST',
+    })
+  } catch (error) {
+    return (error as any).response // 让外面正常处理 LinuxDo 返回的 401
+  }
 }
 
 /**
@@ -63,11 +67,15 @@ export async function fetchLinuxDoToken(code: string): Promise<AxiosResponse<Lin
  * @param token Token
  */
 export async function fetchLinuxDoUserInfo(token: string): Promise<AxiosResponse<LinuxDoUserInfoResp>> {
-  return await fetch({
-    url: 'https://connect.linux.do/api/user',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-    },
-    method: 'GET',
-  })
+  try {
+    return await fetch({
+      url: 'https://connect.linux.do/api/user',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+      method: 'GET',
+    })
+  } catch (error) {
+    return (error as any).response // 让外面正常处理 LinuxDo 返回的 401
+  }
 }
