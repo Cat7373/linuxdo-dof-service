@@ -1,6 +1,5 @@
 import { Context } from 'koa'
 import { ResultObj, useResult } from '../../util/result.js'
-import { useKnex } from '../../db/knex.js'
 
 /**
  * 内部测试接口 - 前端不应该对接此处的任何接口
@@ -12,9 +11,7 @@ class DevController {
    * GET /api/dev/dev
    */
   async dev(ctx: Context): Promise<ResultObj<any>> {
-    const res = (await useKnex().raw(`SELECT UID FROM d_taiwan.accounts WHERE accountname = 'Cat73'`))[0][0].UID
-
-    return useResult().success(res)
+    return useResult().success()
   }
 }
 
