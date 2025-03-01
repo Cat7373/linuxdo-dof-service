@@ -46,8 +46,6 @@ class SignInController {
         return useResult().fail('您今天已经签到过，请勿重复签到')
       }
 
-      let totalCash = config.signInReward.dailyCash
-
       // 进行签到
       await usePrisma().userSignInRecord.upsert({
         where: { uid },
@@ -63,11 +61,14 @@ class SignInController {
       const cumulativeCash = config.signInReward.cumulativeCash[cumulativeDays]
       if (cumulativeCash && cumulativeCash > 0) {
         await usePrisma().$queryRaw `UPDATE taiwan_billing.cash_cera_point SET cera_point = cera_point + ${cumulativeCash} WHERE account = ${uid}`
-        totalCash += cumulativeCash
       }
 
       // 返回结果
-      return useResult().success({ rewardCash: totalCash })
+      return useResult().success({
+        dailyCash: config.signInReward.dailyCash,
+        cumulativeDays,
+        cumulativeCash,
+      })
     })
   }
 }
