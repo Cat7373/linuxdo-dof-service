@@ -33,7 +33,7 @@ class LoginController {
    */
   @CheckInput('code', 'path')
   @CheckInput('state', 'path')
-  async linuxdo(ctx: Context): Promise<any> {
+  async linuxdo(ctx: Context): Promise<ResultObj> {
     // 参数处理
     const { code, state } = koaFirstQueryParam(ctx.query)
 
@@ -69,8 +69,8 @@ class LoginController {
     ctx.session!['uid'] = user.id
     ctx.session!['linuxDoUid'] = user.linuxDoUid
 
-    // 重定向到首页 (也可以考虑前端页面来接 callback，以后再说吧)
-    ctx.redirect('/')
+    // 借用查询登陆信息接口，填充登陆结果
+    return await this.info(ctx)
   }
 
   /**
