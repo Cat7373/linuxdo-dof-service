@@ -50,6 +50,7 @@ class UserTool {
           linuxDoUsername: linuxDoUserInfo.username,
           linuxDoName: linuxDoUserInfo.name,
           linuxDoTrustLevel: linuxDoUserInfo.trust_level,
+          linuxDoSilenced: linuxDoUserInfo.silenced,
           linuxDoInfoUpdatTime: now,
         },
       })

@@ -29,7 +29,7 @@ export async function useHttpService() {
     // 使用 Session 储存状态
     .use(koaSession({
       maxAge: config.http.sessionTimeoutDays * 86400 * 1000,
-      renew: true,
+      renew: false, // 强制过期，以刷新 LinuxDo 数据
       secure: false, // Nginx 负责
       sameSite: 'lax',
     }, app))

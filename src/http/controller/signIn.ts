@@ -3,6 +3,7 @@ import { ResultObj, useResult } from '../../util/result.js'
 import { usePrisma, usePrismaTx } from '../../db/index.js'
 import { useSession } from '../util/index.js'
 import config from '../../config/index.js'
+import { useUserTool } from '../../db/tool/user.js'
 
 /**
  * 签到接口 /api/signIn
@@ -38,6 +39,14 @@ class SignInController {
     const day = new Date().getDate()
 
     return await usePrismaTx(async () => {
+      // 查出用户
+      const user = (await useUserTool().findById(uid))!
+
+      // 不允许被禁言的用户签到
+      if (user.linuxDoSilenced) {
+        return useResult().fail('您当前已被 LinuxDo 禁言，暂时无法签到')
+      }
+
       // 查询签到记录
       const signInRecord = await usePrisma().userSignInRecord.findUnique({ where: { uid } })
 
@@ -58,16 +67,16 @@ class SignInController {
 
       // 发放累计签到奖励
       const cumulativeDays = (((signInRecord?.days as number[])?.length || 0) + 1)
-      const cumulativeCash = config.signInReward.cumulativeCash[cumulativeDays]
-      if (cumulativeCash && cumulativeCash > 0) {
-        await usePrisma().$queryRaw `UPDATE taiwan_billing.cash_cera_point SET cera_point = cera_point + ${cumulativeCash} WHERE account = ${uid}`
+      const cumulativeConf = config.signInReward.cumulativeCash[cumulativeDays]
+      if (cumulativeConf && cumulativeConf[2] >= user.linuxDoTrustLevel) {
+        await usePrisma().$queryRaw `UPDATE taiwan_billing.cash_cera_point SET cera_point = cera_point + ${cumulativeConf[0]} WHERE account = ${uid}`
       }
 
       // 返回结果
       return useResult().success({
         dailyCash: config.signInReward.dailyCash,
         cumulativeDays,
-        cumulativeCash,
+        cumulativeCash: cumulativeConf?.[1],
       })
     })
   }
