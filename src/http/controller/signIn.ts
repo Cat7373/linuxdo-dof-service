@@ -4,6 +4,7 @@ import { usePrisma, usePrismaTx } from '../../db/index.js'
 import { useSession } from '../util/index.js'
 import config from '../../config/index.js'
 import { useUserTool } from '../../db/tool/user.js'
+import { useKnex } from '../../db/knex.js'
 
 /**
  * 签到接口 /api/signIn
@@ -63,13 +64,14 @@ class SignInController {
       })
 
       // 发放每日签到奖励
-      await usePrisma().$queryRaw `UPDATE taiwan_billing.cash_cera_point SET cera_point = cera_point + ${config.signInReward.dailyCash} WHERE account = ${uid}`
+      await useKnex().raw(`UPDATE taiwan_billing.cash_cera_point SET cera_point = cera_point + ${config.signInReward.dailyCash} WHERE account = ${uid}`)
+
 
       // 发放累计签到奖励
       const cumulativeDays = (((signInRecord?.days as number[])?.length || 0) + 1)
       const cumulativeConf = config.signInReward.cumulativeCash[cumulativeDays]
       if (cumulativeConf && cumulativeConf[2] >= user.linuxDoTrustLevel) {
-        await usePrisma().$queryRaw `UPDATE taiwan_billing.cash_cera_point SET cera_point = cera_point + ${cumulativeConf[0]} WHERE account = ${uid}`
+        await useKnex().raw(`UPDATE taiwan_billing.cash_cera_point SET cera_point = cera_point + ${cumulativeConf[0]} WHERE account = ${uid}`)
       }
 
       // 返回结果
