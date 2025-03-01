@@ -10,7 +10,7 @@ const txTrackId = new AsyncLocalStorage<knex.Knex>()
  /**
   * 初始化数据库
   */
-export async function initDatabase() {
+export async function initKnex() {
   dbPool = knex({
     client: 'mysql2',
     connection: useEnv().knexDatabaseUrl,

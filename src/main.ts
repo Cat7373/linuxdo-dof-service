@@ -4,12 +4,14 @@ import { useHttpService } from './http/index.js'
 import { useTasks } from './task/index.js'
 import { useLog } from './util/log.js'
 import { initDatabase } from './db/index.js'
+import { initKnex } from './db/knex.js'
 
 (BigInt.prototype as any).toJSON = function() { return this.toString() }
 
 // Startup
 await initProdConfig()
 await initDatabase()
+await initKnex()
 await useTasks()
 await useHttpService()
 
