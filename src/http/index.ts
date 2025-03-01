@@ -48,9 +48,6 @@ export async function useHttpService() {
 
       return await next()
     })
-    // 请求路由
-    .use(routers.routes())
-    .use(routers.allowedMethods())
     // 包装接口返回值、出错时用标准返回结构
     .use(async (ctx, next) => {
       try {
@@ -67,6 +64,9 @@ export async function useHttpService() {
         ctx.body = useResult().fail('服务内部错误', -3)
       }
     })
+    // 请求路由
+    .use(routers.routes())
+    .use(routers.allowedMethods())
     // 监听服务端口
     .listen(config.http.port, config.http.listen)
 
