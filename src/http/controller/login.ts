@@ -3,6 +3,7 @@ import { ResultObj, useResult } from '../../util/result.js'
 import { CheckInput, koaFirstQueryParam, useSession } from '../util/index.js'
 import { fetchLinuxDoToken, fetchLinuxDoUserInfo } from '../../api/api.js'
 import { useUserTool } from '../../db/tool/user.js'
+import { useEnv } from '../../util/env.js'
 
 /**
  * 登录接口
@@ -15,6 +16,15 @@ class LoginController {
    */
   async info(ctx: Context): Promise<ResultObj> {
     return useResult().success(useSession(ctx))
+  }
+
+  /**
+   * 获取 LinuxDo 授权登录页地址
+   * GET /api/login/linuxdoAuthUrl
+   */
+  async linuxdoAuthUrl(ctx: Context): Promise<ResultObj> {
+    const url = `https://connect.linux.do/oauth2/authorize?response_type=code&client_id=${useEnv().linuxDoClientId}&state=linuxdodnf`
+    return useResult().success(url)
   }
 
   /**

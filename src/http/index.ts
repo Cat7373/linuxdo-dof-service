@@ -11,6 +11,7 @@ import { useEnv } from '../util/env.js'
 const AUTH_WHITE_LIST = [
   '/api/dev/dev',
   '/api/login/info',
+  '/api/login/linuxdoAuthUrl',
   '/api/login/linuxdo',
   '/api/login/logout',
 ]
