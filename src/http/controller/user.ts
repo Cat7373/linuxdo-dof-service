@@ -40,10 +40,11 @@ class UserController {
       }
 
       // 注册账号
+      let dnfUId = 0
       await useKnexTransaction(async () => {
         const md5Pwd = md5(dnfPassword)
         await useKnex().raw(`INSERT INTO d_taiwan.accounts(accountname, password, VIP) VALUES ('${dnfUsername}', '${md5Pwd}', '')`)
-        const dnfUId = (await useKnex().raw(`SELECT UID FROM d_taiwan.accounts WHERE accountname = '${dnfUsername}'`))[0][0].UID as number
+        dnfUId = (await useKnex().raw(`SELECT UID FROM d_taiwan.accounts WHERE accountname = '${dnfUsername}'`))[0][0].UID as number
         await useKnex().raw(`INSERT INTO d_taiwan.member_info(m_id, user_id) VALUES (${dnfUId}, ${dnfUId})`)
         await useKnex().raw(`INSERT INTO d_taiwan.member_white_account(m_id) VALUES (${dnfUId})`)
         await useKnex().raw(`INSERT INTO taiwan_login.member_login(m_id) VALUES (${dnfUId})`)
