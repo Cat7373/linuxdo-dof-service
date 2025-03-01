@@ -95,6 +95,8 @@ class UserController {
    
     // 返回结果
     return useResult().success({
+      id: user.id,
+
       dnfUsername: user.dnfUsername,
 
       linuxDoName: user.linuxDoName,
