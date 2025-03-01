@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+/// 用户表
+model User {
+  id              Int       @id @default(autoincrement()) @db.UnsignedInt
+  dnfId           Int?      @unique @db.UnsignedInt /// DNF 数据库中的用户 ID
+  dnfUsername     String?   @unique /// DNF 数据库中的用户名
+  addtime         DateTime  @default(now()) @db.DateTime(3) /// 注册时间
+  dnfRegisterTime DateTime? @default(now()) @db.DateTime(3) /// 注册时间
+
+  linuxDoUid           Int      @unique @db.UnsignedInt /// LinuxDo 用户 ID
+  linuxDoUsername      String   @db.VarChar(255) /// LinuxDo 用户名
+  linuxDoName          String   @db.VarChar(255) /// LinuxDo 用户昵称
+  linuxDoTrustLevel    Int      @db.UnsignedTinyInt /// LinuxDo 用户信任等级
+  linuxDoInfoUpdatTime DateTime @db.DateTime(3) /// LinuxDo 用户信息更新时间
+}
+
+/// 用户签到记录表
+model UserSignInRecord {
+  id   Int  @id @default(autoincrement()) @db.UnsignedInt
+  uid  Int  @unique @db.UnsignedInt /// 用户 ID
+  days Json /// 签到日清单 [int]
+}

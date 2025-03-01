@@ -1,0 +1,36 @@
+{
+  "extends": "@tsconfig/node21/tsconfig.json", // 继承 NodeJS 21 版的基础声明
+  "compilerOptions": {
+    // 代码级检查
+    "noImplicitAny": true, // 不允许隐式 Any
+    "noImplicitThis": true, // 不允许隐式将 this 推导为 Any
+    "noImplicitOverride": true, // 不允许隐式 Override 函数
+    "noImplicitReturns": true, // 要求有返回值的函数，所有路径都必须有返回关键字，否则给出警告
+    "alwaysStrict": true, // 始终要求使用严格模式
+    "noPropertyAccessFromIndexSignature": true, // 在 { [key: string]: any } 这样的结构中，禁止使用 obj.xxx 的形式访问未定义的属性，只允许使用 obj['xxx'] 的形式
+    "noUncheckedIndexedAccess": true, // 在访问未定义的属性时，其类型推导自动增加 undefined 这个可能的取值
+    "strictPropertyInitialization": true, // 要求类中声明的所有字段必须被立刻初始化或在构造函数中被初始化
+    "strictNullChecks": true, // 在类似 Array.find 函数中，在返回值类型推导中自动增加 null 这个可能的取值
+    "strictBindCallApply": true, // 要求 call、bind、apply 强检查传入对象的类型，并生成正确的返回值类型
+    "strictFunctionTypes": true, // 严格检查函数的参数类型，不允许出现未声明的参数类型的可能性
+    "forceConsistentCasingInFileNames": true, // 强制检查导入代码和实际文件名的大小写一致
+    "downlevelIteration": true, // 不使用新一些的迭代方式如 for (xxx of yyy) - 用于编译后的代码加密
+
+    // 代码级辅助
+    "allowSyntheticDefaultImports": true, // 允许直接 import xxx from 'xxx' 而不是 import * as xxx from xxx
+
+    // 编译过程
+    "importHelpers": true, // 从 tslib 中导入辅助代码，而不是在每个文件中单独声明这些代码 - 用于编译后的代码加密
+    "removeComments": true, // Build 时移除所有代码注释
+    "noEmitOnError": true, // 如果编译时出现了错误，请勿输出任何文件
+    "outDir": "./built", // 编译输出目录
+    "sourceMap": true, // 生成 source map，辅助调试
+
+    // 导包、模块
+    "resolveJsonModule": true, // 允许导入 JSON 文件
+    "lib": ["ESNext"], // 额外导入的支持库(设定为使用最新 ES 标准中的所有功能)
+    "module": "nodenext", // 模块系统（目前版本下，NodeNext 和 Node16 的表现基本相同，未来若有 Break 变动，Next 会跟随，16 会保持现状）
+    "moduleResolution": "nodenext", // 模块解析方式
+  },
+  "include": ["./src/**/*.ts"], // 需要被编译的文件的匹配表达式
+}
