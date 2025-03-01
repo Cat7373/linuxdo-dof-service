@@ -73,7 +73,7 @@ class SignInController {
         await useKnex().raw(`UPDATE taiwan_billing.cash_cera_point SET cera_point = cera_point + ${config.signInReward.dailyCash} WHERE account = ${user.dnfId}`)
 
         // 发放累计签到奖励
-        if (cumulativeConf && cumulativeConf[2] >= user.linuxDoTrustLevel) {
+        if (cumulativeConf && user.linuxDoTrustLevel >= cumulativeConf[2]) {
           await useKnex().raw(`UPDATE taiwan_billing.cash_cera_point SET cera_point = cera_point + ${cumulativeConf[0]} WHERE account = ${user.dnfId}`)
         }
       })
