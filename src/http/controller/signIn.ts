@@ -70,11 +70,11 @@ class SignInController {
 
       await useKnexTransaction(async () => {
         // 发放每日签到奖励
-        await useKnex().raw(`UPDATE taiwan_billing.cash_cera SET cera = cera + ${config.signInReward.dailyCash} WHERE account = ${uid}`)
+        await useKnex().raw(`UPDATE taiwan_billing.cash_cera_point SET cera_point = cera_point + ${config.signInReward.dailyCash} WHERE account = ${user.dnfId}`)
 
         // 发放累计签到奖励
         if (cumulativeConf && cumulativeConf[2] >= user.linuxDoTrustLevel) {
-          await useKnex().raw(`UPDATE taiwan_billing.cash_cera SET cera = cera + ${cumulativeConf[0]} WHERE account = ${uid}`)
+          await useKnex().raw(`UPDATE taiwan_billing.cash_cera_point SET cera_point = cera_point + ${cumulativeConf[0]} WHERE account = ${user.dnfId}`)
         }
       })
 
