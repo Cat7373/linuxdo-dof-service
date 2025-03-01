@@ -2,7 +2,7 @@
 LinuxDo DOF - 服务端
 
 ## 安装配置
-1. 安装 NodeJS(>= 20.0)
+1. 安装 NodeJS(>= 21.0)
 2. 运行 `pnpm install`
 3. 修改 `src/config/index.ts` 中的配置
 4. 修改 `.env` 中的配置

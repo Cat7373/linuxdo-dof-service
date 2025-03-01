@@ -14,13 +14,12 @@
     "strictBindCallApply": true, // 要求 call、bind、apply 强检查传入对象的类型，并生成正确的返回值类型
     "strictFunctionTypes": true, // 严格检查函数的参数类型，不允许出现未声明的参数类型的可能性
     "forceConsistentCasingInFileNames": true, // 强制检查导入代码和实际文件名的大小写一致
-    "downlevelIteration": true, // 不使用新一些的迭代方式如 for (xxx of yyy) - 用于编译后的代码加密
 
     // 代码级辅助
     "allowSyntheticDefaultImports": true, // 允许直接 import xxx from 'xxx' 而不是 import * as xxx from xxx
 
     // 编译过程
-    "importHelpers": true, // 从 tslib 中导入辅助代码，而不是在每个文件中单独声明这些代码 - 用于编译后的代码加密
+    "importHelpers": true, // 从 tslib 中导入辅助代码，而不是在每个文件中单独声明这些代码
     "removeComments": true, // Build 时移除所有代码注释
     "noEmitOnError": true, // 如果编译时出现了错误，请勿输出任何文件
     "outDir": "./built", // 编译输出目录
