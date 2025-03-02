@@ -14,7 +14,7 @@ model User {
   dnfId           Int?      @unique @db.UnsignedInt /// DNF 数据库中的用户 ID
   dnfUsername     String?   @unique /// DNF 数据库中的用户名
   addtime         DateTime  @default(now()) @db.DateTime(3) /// 注册时间
-  dnfRegisterTime DateTime? @default(now()) @db.DateTime(3) /// 注册时间
+  dnfRegisterTime DateTime? @db.DateTime(3) /// DNF 注册时间
 
   linuxDoUid           Int      @unique @db.UnsignedInt /// LinuxDo 用户 ID
   linuxDoUsername      String   @db.VarChar(255) /// LinuxDo 用户名
