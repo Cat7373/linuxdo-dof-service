@@ -48,6 +48,10 @@ class SignInController {
         return useResult().fail('您当前已被 LinuxDo 禁言，暂时无法签到')
       }
 
+      if (!user.dnfId) {
+        return useResult().fail('您未注册过 DNF 账号，无法签到')
+      }
+
       // 查询签到记录
       const signInRecord = await usePrisma().userSignInRecord.findUnique({ where: { uid } })
 
