@@ -2,9 +2,11 @@ import { Context } from 'koa'
 import { ResultObj, useResult } from '../../util/result.js'
 import { usePrisma, usePrismaTx } from '../../db/index.js'
 import { useSession } from '../util/index.js'
-import config from '../../config/index.js'
+import config, { DnfReward } from '../../config/index.js'
 import { useUserTool } from '../../db/tool/user.js'
-import { useKnex, useKnexTransaction } from '../../db/knex.js'
+import { useKnexTransaction } from '../../db/knex.js'
+import items from '../../config/items.js'
+import { sendReward } from '../../util/index.js'
 
 /**
  * 签到接口 /api/signIn
@@ -21,6 +23,7 @@ class SignInController {
 
     return useResult().success({
       conf: config.signInReward,
+      items,
       signInDays: signInRecord?.days || [],
     })
   }
@@ -34,9 +37,10 @@ class SignInController {
 
     // 每天 04:00 之前不开放签到
     if (new Date().getHours() < 4) {
-      return useResult().fail('每天 04:00 后开放签到 (鼓励早睡喵)')
+      return useResult().fail('每天 04:00 后开放签到 (请早睡喵)')
     }
 
+    // 签到时间是这个月的几号
     const day = new Date().getDate()
 
     return await usePrismaTx(async () => {
@@ -48,6 +52,7 @@ class SignInController {
         return useResult().fail('您当前已被 LinuxDo 禁言，暂时无法签到')
       }
 
+      // 不允许未注册账号的用户签到
       if (!user.dnfId) {
         return useResult().fail('您未注册过 DNF 账号，无法签到')
       }
@@ -55,39 +60,39 @@ class SignInController {
       // 查询签到记录
       const signInRecord = await usePrisma().userSignInRecord.findUnique({ where: { uid } })
 
-      // 判断是否签到
+      // 判断今天是否已经签到过
       if ((signInRecord?.days as number[])?.includes(day)) {
         return useResult().fail('您今天已经签到过，请勿重复签到')
       }
 
-      // 进行签到
+      // 记录签到
       await usePrisma().userSignInRecord.upsert({
         where: { uid },
         update: { days: [...((signInRecord?.days as number[]) ?? []), day] },
         create: { uid, days: [day] },
       })
 
+      // 日常签到奖励内容
+      const dailyReward = config.signInReward.dailyReward
+      let cumulativeReward: DnfReward | null = null
 
-      // 计算累计签到奖励
+      // 累计签到奖励内容
       const cumulativeDays = (((signInRecord?.days as number[])?.length || 0) + 1)
       const cumulativeConf = config.signInReward.cumulativeCash[cumulativeDays]
+      if (cumulativeConf && user.linuxDoTrustLevel >= cumulativeConf.minTrustLevel) {
+        cumulativeReward = cumulativeConf.dailyReward
+      }
 
+      // 发放签到奖励
       await useKnexTransaction(async () => {
-        // 发放每日签到奖励
-        await useKnex().raw(`UPDATE taiwan_billing.cash_cera_point SET cera_point = cera_point + ${config.signInReward.dailyCash} WHERE account = ${user.dnfId}`)
-
-        // 发放累计签到奖励
-        if (cumulativeConf && user.linuxDoTrustLevel >= cumulativeConf[2]) {
-          await useKnex().raw(`UPDATE taiwan_billing.cash_cera_point SET cera_point = cera_point + ${cumulativeConf[0]} WHERE account = ${user.dnfId}`)
+        await sendReward(user.dnfId!, user.dnfBindCharacId, dailyReward)
+        if (cumulativeReward) {
+          await sendReward(user.dnfId!, user.dnfBindCharacId, cumulativeReward)
         }
       })
 
       // 返回结果
-      return useResult().success({
-        dailyCash: config.signInReward.dailyCash,
-        cumulativeDays,
-        cumulativeCash: cumulativeConf?.[1],
-      })
+      return useResult().success()
     })
   }
 }

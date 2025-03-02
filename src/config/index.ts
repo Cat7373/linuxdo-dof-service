@@ -1,6 +1,27 @@
 import { useLog } from '../util/log.js'
 
 /**
+ * 奖励设置
+ */
+export interface DnfReward {
+  cash?: number, // 点卷数
+  cashDisplay?: string, // 用于覆盖点卷数的显示字符串
+  gold?: number, // 金币数
+  items?: Array<{ // 物品清单
+    id: number, // 物品 ID
+    count: number, // 物品数量
+  }>,
+}
+
+/**
+ * 累签奖励设置
+ */
+export interface SignInReward {
+  dailyReward: DnfReward, // 签到奖励
+  minTrustLevel: number, // 需要的信任等级
+}
+
+/**
  * 服务配置(默认内容为 Dev 配置，生产环境通过启动参数和配置文件覆盖)
  */
 const config = {
@@ -12,28 +33,169 @@ const config = {
     listen: '127.0.0.1',
     sessionTimeoutDays: 5,
   },
-  // 注册送多少点卷
+  dnfMailSender: 'LinuxDo', // DNF 中邮件发送人的名字
+  // 注册送多少点卷 (注册时无角色，只能发点卷)
   registerCash: 8888,
   // 签到奖励设置
   signInReward: {
-    // 每日签到奖励的点卷
-    dailyCash: 1234,
-    // 每月签到满多少天额外奖励多少点卷 (奖励多少，前端显示什么，需要几级信任等级来领取)
+    // 每日签到的奖励
+    dailyReward: {
+      cash: 1234,
+      gold: 100000,
+      items: [
+        { id: 36,     count: 66 }, // 喇叭 x66
+        { id: 666666, count: 1 },  // 深渊派对通行证 x1
+        { id: 3326,   count: 10 }, // 强烈的气息 x10
+        { id: 8292,   count: 1 },  // 1% +12 装备强化券 x1
+        { id: 8308,   count: 1 },  // 1% +12 装备增幅券 x1
+      ],
+    } as DnfReward,
+    // 每月签到满多少天的额外奖励
     cumulativeCash: {
-      // 所有用户均可领取
-      3: [666, '666', 2],
-      7: [2024, '2024', 2],
-      10: [117, '0117', 2],
-      14: [6666, '6666', 2],
-      20: [8888, '8888', 2],
-      26: [12345, '12345', 2],
-
-      // 三级佬专属福利
-      5: [888, '888', 3],
-      17: [8888, '8888', 3],
-      23: [12345, '12345', 3],
-      28: [23333, '23333', 3],
-    } as Record<number, [number, string, number]>,
+      2: {
+        dailyReward: {
+          cash: 2024,
+          items: [
+            { id: 3326, count: 20 }, // 强烈的气息 x20
+            { id: 8292, count: 5 },  // 1% +12 装备强化券 x5
+            { id: 8308, count: 3 },  // 1% +12 装备增幅券 x3
+          ],
+        },
+        minTrustLevel: 1,
+      },
+      3: { // 3 天 - 117 点卷 - 200000 金币 - 1% +12 装备强化券 x2 - 1% +12 装备增幅券 x1
+        dailyReward: {
+          cash: 117, cashDisplay: '0117',
+          gold: 200000,
+          items: [
+            { id: 36,     count: 100 }, // 喇叭 x100
+            { id: 666666, count: 3 },   // 深渊派对通行证 x3
+            { id: 3326,   count: 30 },  // 强烈的气息 x30
+            { id: 8305,   count: 3 },   // 90% +7 装备强化卷 x3
+            { id: 8321,   count: 2 },   // 90% +7 装备增幅卷 x2
+          ],
+        },
+        minTrustLevel: 1,
+      },
+      6: {
+        dailyReward: {
+          cash: 2345,
+          items: [
+            { id: 666666, count: 5 },   // 深渊派对通行证 x5
+            { id: 3326,   count: 50 },  // 强烈的气息 x50
+            { id: 8300,   count: 2 },   // 30% +10 装备强化卷 x2
+            { id: 8316,   count: 1 },   // 30% +10 装备增幅卷 x1
+          ],
+        },
+        minTrustLevel: 1,
+      },
+      9: { // 三级专享
+        dailyReward: {
+          cash: 6666,
+          gold: 500000,
+          items: [
+            { id: 36,     count: 100 }, // 喇叭 x100
+            { id: 666666, count: 20 },  // 深渊派对通行证 x20
+            { id: 3326,   count: 80 },  // 强烈的气息 x80
+            { id: 8301,   count: 1 },   // 30% +12 装备强化卷 x1
+            { id: 8317,   count: 1 },   // 30% +12 装备增幅卷 x1
+          ],
+        },
+        minTrustLevel: 3,
+      },
+      12: {
+        dailyReward: {
+          cash: 6666,
+          gold: 500000,
+        },
+        items: [
+          { id: 36,     count: 200 }, // 喇叭 x200
+          { id: 666666, count: 10 },  // 深渊派对通行证 x10
+          { id: 3326,   count: 80 },  // 强烈的气息 x80
+          { id: 8298,   count: 2 },   // 10% +12 装备强化卷 x2
+          { id: 8314,   count: 1 },   // 10% +12 装备增幅卷 x1
+        ],
+        minTrustLevel: 1,
+      },
+      15: { // 三级专享
+        dailyReward: {
+          cash: 8888,
+        },
+        items: [
+          { id: 36,     count: 200 },  // 喇叭 x200
+          { id: 666666, count: 30 },   // 深渊派对通行证 x30
+          { id: 3326,   count: 100 },  // 强烈的气息 x100
+          { id: 8301,   count: 2 },    // 30% +12 装备强化卷 x2
+          { id: 8317,   count: 2 },    // 30% +12 装备增幅卷 x2
+        ],
+        minTrustLevel: 3,
+      },
+      18: {
+        dailyReward: {
+          cash: 8888,
+          items: [
+            { id: 666666, count: 15 },   // 深渊派对通行证 x15
+            { id: 3326,   count: 100 },  // 强烈的气息 x100
+            { id: 8301,   count: 1 },    // 30% +12 装备强化卷 x1
+            { id: 8317,   count: 1 },    // 30% +12 装备增幅卷 x1
+          ],
+        },
+        minTrustLevel: 1,
+      },
+      21: { // 三级专享
+        dailyReward: {
+          cash: 8888,
+          gold: 888888,
+          items: [
+            { id: 36,     count: 300 },  // 喇叭 x300
+            { id: 666666, count: 40 },   // 深渊派对通行证 x40
+            { id: 3326,   count: 150 },  // 强烈的气息 x150
+            { id: 8304,   count: 1 },    // 50% +12 装备强化卷 x1
+            { id: 8320,   count: 1 },    // 50% +12 装备增幅卷 x1
+          ],
+        },
+        minTrustLevel: 3,
+      },
+      24: {
+        dailyReward: {
+          cash: 8888,
+          gold: 888888,
+          items: [
+            { id: 36,     count: 300 },  // 喇叭 x300
+            { id: 666666, count: 20 },   // 深渊派对通行证 x20
+            { id: 3326,   count: 150 },  // 强烈的气息 x150
+            { id: 8304,   count: 1 },    // 50% +12 装备强化卷 x1
+            { id: 8320,   count: 1 },    // 50% +12 装备增幅卷 x1
+          ],
+        },
+        minTrustLevel: 1,
+      },
+      27: { // 三级专享
+        dailyReward: {
+          cash: 12345,
+          items: [
+            { id: 36,     count: 500 },  // 喇叭 x500
+            { id: 666666, count: 50 },   // 深渊派对通行证 x50
+            { id: 3326,   count: 300 },  // 强烈的气息 x300
+            { id: 7275,   count: 1 },    // +12 装备强化卷 x1
+            { id: 8237,   count: 1 },    // +12 装备增幅卷 x1
+          ],
+        },
+        minTrustLevel: 3,
+      },
+      28: {
+        dailyReward: {
+          cash: 12345,
+          items: [
+            { id: 666666, count: 30 },   // 深渊派对通行证 x30
+            { id: 3326,   count: 200 },  // 强烈的气息 x200
+            { id: 8307,   count: 2 },    // 90% +12 装备强化卷 x2
+            { id: 8323,   count: 2 },    // 90% +12 装备增幅卷 x2
+          ],
+        },
+        minTrustLevel: 1,
+      },
+    } as Record<number, SignInReward>,
   },
 }
 export default config

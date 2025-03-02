@@ -10,17 +10,19 @@ datasource db {
 
 /// 用户表
 model User {
-  id              Int       @id @default(autoincrement()) @db.UnsignedInt
-  dnfId           Int?      @unique @db.UnsignedInt /// DNF 数据库中的用户 ID
-  dnfUsername     String?   @unique /// DNF 数据库中的用户名
-  addtime         DateTime  @db.DateTime(3) /// 注册时间
-  dnfRegisterTime DateTime? @db.DateTime(3) /// DNF 注册时间
+  id                Int       @id @default(autoincrement()) @db.UnsignedInt
+  dnfId             Int?      @unique @db.UnsignedInt /// DNF 数据库中的用户 ID
+  dnfUsername       String?   @unique /// DNF 数据库中的用户名
+  addtime           DateTime  @db.DateTime(3) /// 注册时间
+  dnfRegisterTime   DateTime? @db.DateTime(3) /// DNF 注册时间
+  dnfBindCharacId   Int?      @db.UnsignedInt /// DNF 绑定的角色 ID
+  dnfBindCharacName String?   @db.VarChar(255) /// DNF 绑定的角色名称
 
   linuxDoUid           Int      @unique @db.UnsignedInt /// LinuxDo 用户 ID
   linuxDoUsername      String   @db.VarChar(255) /// LinuxDo 用户名
   linuxDoName          String   @db.VarChar(255) /// LinuxDo 用户昵称
   linuxDoTrustLevel    Int      @db.UnsignedTinyInt /// LinuxDo 用户信任等级
-  linuxDoSilenced      Boolean  /// LinuxDo 用户是否被禁言
+  linuxDoSilenced      Boolean /// LinuxDo 用户是否被禁言
   linuxDoInfoUpdatTime DateTime @db.DateTime(3) /// LinuxDo 用户信息更新时间
 }
 

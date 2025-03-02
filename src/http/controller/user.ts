@@ -10,6 +10,8 @@ import { useKnex, useKnexTransaction } from '../../db/knex.js'
 interface RegisterDnfAccountBody { dnfUsername: string, dnfPassword: string }
 // 修改 DNF 密码请求数据
 interface ChangeDnfPasswordBody { dnfPassword: string }
+// 绑定角色请求数据
+interface BindCharacBody { characNo: number }
 
 /**
  * 用户接口
@@ -86,6 +88,56 @@ class UserController {
   }
 
   /**
+   * 查询用户角色列表
+   * GET /api/user/listCharac
+   */
+  async listCharac(ctx: Context): Promise<ResultObj> {
+    // 参数处理
+    const uid = useSession(ctx)!.uid
+
+    // 查出用户
+    const user = (await useUserTool().findById(uid))!
+
+    // 查出角色列表
+    const characList = (await useKnex().raw(`SELECT charac_no, charac_name FROM taiwan_cain.charac_info WHERE m_id = ${user.dnfId}`))[0]
+
+    // 返回结果
+    return useResult().success(characList)
+  }
+
+  /**
+   * 绑定角色
+   * POST /api/user/bindCharac
+   */
+  @CheckInput('characNo', 'body', { type: 'number' })
+  async bindCharac(ctx: Context): Promise<ResultObj> {
+    // 参数处理
+    const { characNo } = ctx.request.body as BindCharacBody
+    const uid = useSession(ctx)!.uid
+
+    // 查出用户
+    const user = (await useUserTool().findById(uid))!
+
+    // 查出角色列表
+    const characList = (await useKnex().raw(`SELECT charac_no, charac_name FROM taiwan_cain.charac_info WHERE m_id = ${user.dnfId}`))[0]
+
+    // 判断是否是自己的角色
+    const charac = characList.find((item: any) => item.charac_no === characNo)
+    if (!charac) {
+      return useResult().fail('角色 ID 错误，无法进行绑定')
+    }
+
+    // 绑定角色
+    await usePrisma().user.update({
+      where: { id: uid },
+      data: { dnfBindCharacId: charac.charac_no, dnfBindCharacName: charac.charac_name }
+    })
+
+    // 返回结果
+    return useResult().success()
+  }
+
+  /**
    * 查询用户信息
    * GET /api/user/info
    */
@@ -98,6 +150,7 @@ class UserController {
       id: user.id,
 
       dnfUsername: user.dnfUsername,
+      dnfBindCharacName: user.dnfBindCharacName,
 
       linuxDoName: user.linuxDoName,
       linuxDoUsername: user.linuxDoUsername,
