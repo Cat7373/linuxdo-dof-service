@@ -32,6 +32,8 @@ class UserTool {
     // 查询用户信息
     const user = await this.findByLinuxDoUid(linuxDoUserInfo.id)
 
+    const now = new Date()
+
     // 若用户未注册，则为其注册
     if (!user) {
       if (linuxDoUserInfo.silenced) { // 用户被禁言，禁止注册
@@ -41,12 +43,23 @@ class UserTool {
         return useResult().fail('您需要在 LinuxDo 升级到 2 级才能注册，请先多摸摸鱼喵，升级引导：https://linux.do/t/topic/2460')
       }
 
-      const now = new Date()
       await usePrisma().user.create({
         data: {
           addtime: now,
 
           linuxDoUid: linuxDoUserInfo.id,
+          linuxDoUsername: linuxDoUserInfo.username,
+          linuxDoName: linuxDoUserInfo.name,
+          linuxDoTrustLevel: linuxDoUserInfo.trust_level,
+          linuxDoSilenced: linuxDoUserInfo.silenced,
+          linuxDoInfoUpdatTime: now,
+        },
+      })
+    } else {
+      // 用户已注册，更新用户信息
+      await usePrisma().user.update({
+        where: { id: user.id },
+        data: {
           linuxDoUsername: linuxDoUserInfo.username,
           linuxDoName: linuxDoUserInfo.name,
           linuxDoTrustLevel: linuxDoUserInfo.trust_level,
