@@ -78,7 +78,7 @@ class SignInController {
 
       // 累计签到奖励内容
       const cumulativeDays = (((signInRecord?.days as number[])?.length || 0) + 1)
-      const cumulativeConf = config.signInReward.cumulativeCash[cumulativeDays]
+      const cumulativeConf = config.signInReward.cumulativeReward[cumulativeDays]
       if (cumulativeConf && user.linuxDoTrustLevel >= cumulativeConf.minTrustLevel) {
         cumulativeReward = cumulativeConf.dailyReward
       }

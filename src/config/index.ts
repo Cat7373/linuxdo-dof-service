@@ -51,7 +51,7 @@ const config = {
       ],
     } as DnfReward,
     // 每月签到满多少天的额外奖励
-    cumulativeCash: {
+    cumulativeReward: {
       2: {
         dailyReward: {
           cash: 2024,
