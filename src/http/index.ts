@@ -32,7 +32,6 @@ export async function useHttpService() {
       maxAge: config.http.sessionTimeoutDays * 86400 * 1000,
       renew: false, // 强制过期，以刷新 LinuxDo 数据
       secure: false, // Nginx 负责
-      sameSite: 'lax',
     }, app))
     // 登陆检查
     .use(async (ctx, next) => {
