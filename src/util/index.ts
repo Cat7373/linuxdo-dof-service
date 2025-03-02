@@ -24,13 +24,13 @@ export async function sendReward(dnfId: number, characId: number | null, reward:
 
   // 发放金币 (附件带一个无色小晶体)
   if (reward.gold && characId) {
-    await useKnex().raw(`INSERT INTO taiwan_cain_2nd.postal (occ_time, send_charac_name, receive_charac_no, item_id, add_info, gold) VALUES ('${dayjs().format('YYYY-MM-DD HH:mm:ss')}', ${config.dnfMailSender}, ${characId}, 3037, 1, ${reward.gold})`)
+    await useKnex().raw(`INSERT INTO taiwan_cain_2nd.postal (occ_time, send_charac_name, receive_charac_no, item_id, add_info, gold) VALUES ('${dayjs().format('YYYY-MM-DD HH:mm:ss')}', '${config.dnfMailSender}', ${characId}, 3037, 1, ${reward.gold})`)
   }
 
   // 发放物品
   if (reward.items) {
     for (const item of reward.items) {
-      await useKnex().raw(`INSERT INTO taiwan_cain_2nd.postal (occ_time, send_charac_name, receive_charac_no, item_id, add_info, count) VALUES ('${dayjs().format('YYYY-MM-DD HH:mm:ss')}', ${config.dnfMailSender}, ${characId}, ${item.id}, ${item.count}, 0)`)
+      await useKnex().raw(`INSERT INTO taiwan_cain_2nd.postal (occ_time, send_charac_name, receive_charac_no, item_id, add_info, count) VALUES ('${dayjs().format('YYYY-MM-DD HH:mm:ss')}', '${config.dnfMailSender}', ${characId}, ${item.id}, ${item.count}, 0)`)
     }
   }
 }
