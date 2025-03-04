@@ -5,6 +5,7 @@ import { usePrisma, usePrismaTx } from '../../db/index.js'
 import { useUserTool } from '../../db/tool/user.js'
 import config from '../../config/index.js'
 import { useKnex, useKnexTransaction } from '../../db/knex.js'
+import { convertDnfString } from '../../util/index.js'
 
 // 注册 DNF 账号请求数据
 interface RegisterDnfAccountBody { dnfUsername: string, dnfPassword: string }
@@ -101,6 +102,11 @@ class UserController {
     // 查出角色列表
     const characList = (await useKnex().raw(`SELECT charac_no, charac_name FROM taiwan_cain.charac_info WHERE m_id = ${user.dnfId}`))[0]
 
+    // 转换字符编码
+    characList.forEach((item: any) => {
+      item.charac_name = convertDnfString(item.charac_name)
+    })
+
     // 返回结果
     return useResult().success(characList)
   }
@@ -130,7 +136,7 @@ class UserController {
     // 绑定角色
     await usePrisma().user.update({
       where: { id: uid },
-      data: { dnfBindCharacId: charac.charac_no, dnfBindCharacName: charac.charac_name }
+      data: { dnfBindCharacId: charac.charac_no, dnfBindCharacName: convertDnfString(charac.charac_name) }
     })
 
     // 返回结果

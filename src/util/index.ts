@@ -1,6 +1,8 @@
 import dayjs from "dayjs"
 import config, { DnfReward } from "../config/index.js"
 import { useKnex } from "../db/knex.js"
+import { Buffer } from 'buffer'
+import iconv from 'iconv-lite'
 
 /**
  * 等待一会
@@ -34,4 +36,32 @@ export async function sendReward(dnfId: number, characId: number | null, reward:
       await useKnex().raw(`INSERT INTO taiwan_cain_2nd.postal (occ_time, send_charac_name, receive_charac_no, item_id, add_info, endurance) VALUES ('${dayjs().format('YYYY-MM-DD HH:mm:ss')}', '${config.dnfMailSender}', ${characId}, ${item.id}, ${item.count}, ${endTime})`)
     }
   }
+}
+
+/**
+ * 转换 DNF 数据库中的字符串
+ * @param s 字符串
+ * @returns 转换后的字符串
+ */
+export function convertDnfString(s: string) {
+  if (s == null) return ''
+
+  let buffer = Buffer.alloc(s.length)
+  for (let i = 0; i < s.length; ++i) {
+    let c = s.charCodeAt(i)
+    if (c === 0x81) {
+      buffer[i] = 0x81
+    } else if (c === 0x8d) {
+      buffer[i] = 0x8d
+    } else if (c === 0x8f) {
+      buffer[i] = 0x8f
+    } else if (c === 0x90) {
+      buffer[i] = 0x90
+    } else if (c === 0x9d) {
+      buffer[i] = 0x9d
+    } else {
+      buffer[i] = iconv.encode(String.fromCharCode(c), 'cp1252')[0]!
+    }
+  }
+  return buffer.toString('utf-8')
 }
