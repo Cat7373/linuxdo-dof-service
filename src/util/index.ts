@@ -40,7 +40,7 @@ export async function sendReward(dnfId: number, characId: number | null, reward:
 
 /**
  * 转换 DNF 数据库中的字符串
- * @param s 字符串
+ * @param hex 字符串的 Hex 表示
  * @returns 转换后的字符串
  */
 export function convertDnfString(hex: string) {

@@ -3,11 +3,17 @@ LinuxDo DOF - 服务端
 
 [配套前端](https://github.com/Cat7373/linuxdo-dof-ui) | [LinuxDo DOF 公益服筹建贴](https://linux.do/t/topic/458099) | [DNF 服务器 Docker 版仓库](https://github.com/1995chen/dnf)
 
+## 功能
+1. LinuxDo 登录
+2. 注册 DOF 账号 / 修改密码
+3. 绑定 DOF 角色
+4. 签到领奖
+
 ## 安装配置
 1. 安装 NodeJS(>= 21.0)
 2. 运行 `pnpm install`
 3. 修改 `src/config/index.ts` 中的配置
-4. 修改 `.env` 中的配置
+4. 修改 `.env` 中的配置，注意，Prisma 指向业务数据库，要求 MySQL 5.6 及以上，Knex 指向毒奶粉数据库
 
 ## 开发调试
 1. 运行 `pnpm run start` 启动测试服务
@@ -49,3 +55,8 @@ LinuxDo DOF - 服务端
 6. 其他:
    1. 打开 GUI 监控工具: `pm2 monit`
    2. 升级全局 pm2 后刷新服务: `pm2 update`
+
+## TODO
+* 新玩家礼包 - 创建角色后领取
+* 礼包码兑换机制，方便逢年过节啥的发点小礼品
+* 在线玩家礼包机制，方便逢年过节的给在线的佬友发点小礼品
