@@ -4,7 +4,7 @@ import { useHttpService } from './http/index.js'
 import { useTasks } from './task/index.js'
 import { useLog } from './util/log.js'
 import { initDatabase, usePrisma } from './db/index.js'
-import { initKnex } from './db/knex.js'
+import { initKnex, useKnex } from './db/knex.js'
 import { convertDnfString } from './util/index.js'
 
 (BigInt.prototype as any).toJSON = function() { return this.toString() }
@@ -19,7 +19,8 @@ await useHttpService()
 // 一次性维护：更新所有用户绑定的角色名称
 const users = await usePrisma().user.findMany({ where: { dnfBindCharacName: { not: null }}})
 for (const user of users) {
-  console.log(user.dnfBindCharacId, user.dnfBindCharacName, convertDnfString(user.dnfBindCharacName!))
+  const characList = (await useKnex().raw(`SELECT charac_no, charac_name FROM taiwan_cain.charac_info WHERE charac_no = ${user.dnfBindCharacId}`))[0][0]
+  console.log(user.dnfBindCharacId, user.dnfBindCharacName, characList.charac_name, convertDnfString(characList.charac_name))
 }
 
 // Send ready
