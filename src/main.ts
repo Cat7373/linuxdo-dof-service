@@ -21,6 +21,11 @@ const users = await usePrisma().user.findMany({ where: { dnfBindCharacName: { no
 for (const user of users) {
   const characList = (await useKnex().raw(`SELECT charac_no, HEX(charac_name) AS charac_name FROM taiwan_cain.charac_info WHERE charac_no = ${user.dnfBindCharacId}`))[0][0]
   console.log(user.dnfBindCharacId, user.dnfBindCharacName, characList.charac_name, convertDnfString(characList.charac_name))
+
+  await usePrisma().user.update({
+    where: { id: user.id },
+    data: { dnfBindCharacName: convertDnfString(characList.charac_name) }
+  })
 }
 
 // Send ready
