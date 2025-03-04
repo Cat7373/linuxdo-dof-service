@@ -19,7 +19,7 @@ await useHttpService()
 // 一次性维护：更新所有用户绑定的角色名称
 const users = await usePrisma().user.findMany({ where: { dnfBindCharacName: { not: null }}})
 for (const user of users) {
-  const characList = (await useKnex().raw(`SELECT charac_no, charac_name FROM taiwan_cain.charac_info WHERE charac_no = ${user.dnfBindCharacId}`))[0][0]
+  const characList = (await useKnex().raw(`SELECT charac_no, HEX(charac_name) AS charac_name FROM taiwan_cain.charac_info WHERE charac_no = ${user.dnfBindCharacId}`))[0][0]
   console.log(user.dnfBindCharacId, user.dnfBindCharacName, characList.charac_name, convertDnfString(characList.charac_name))
 }
 

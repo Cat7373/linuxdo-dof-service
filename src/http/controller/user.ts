@@ -100,7 +100,7 @@ class UserController {
     const user = (await useUserTool().findById(uid))!
 
     // 查出角色列表
-    const characList = (await useKnex().raw(`SELECT charac_no, charac_name FROM taiwan_cain.charac_info WHERE m_id = ${user.dnfId}`))[0]
+    const characList = (await useKnex().raw(`SELECT charac_no, HEX(charac_name) AS charac_name FROM taiwan_cain.charac_info WHERE m_id = ${user.dnfId}`))[0]
 
     // 转换字符编码
     characList.forEach((item: any) => {
@@ -125,7 +125,7 @@ class UserController {
     const user = (await useUserTool().findById(uid))!
 
     // 查出角色列表
-    const characList = (await useKnex().raw(`SELECT charac_no, charac_name FROM taiwan_cain.charac_info WHERE m_id = ${user.dnfId}`))[0]
+    const characList = (await useKnex().raw(`SELECT charac_no, HEX(charac_name) AS charac_name FROM taiwan_cain.charac_info WHERE m_id = ${user.dnfId}`))[0]
 
     // 判断是否是自己的角色
     const charac = characList.find((item: any) => item.charac_no === characNo)

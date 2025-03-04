@@ -43,12 +43,15 @@ export async function sendReward(dnfId: number, characId: number | null, reward:
  * @param s 字符串
  * @returns 转换后的字符串
  */
-export function convertDnfString(s: string) {
-  if (s == null) return ''
+export function convertDnfString(hex: string) {
+  if (!hex) return ''
 
-  let buffer = Buffer.alloc(s.length)
-  for (let i = 0; i < s.length; ++i) {
-    let c = s.charCodeAt(i)
+  const bytes = Buffer.from(hex, 'hex')
+  let str = bytes.toString('utf-8')
+
+  let buffer = Buffer.alloc(str.length)
+  for (let i = 0; i < str.length; ++i) {
+    let c = str.charCodeAt(i)
     if (c === 0x81) {
       buffer[i] = 0x81
     } else if (c === 0x8d) {
