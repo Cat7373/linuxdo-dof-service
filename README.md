@@ -49,6 +49,3 @@ LinuxDo DOF - 服务端
 6. 其他:
    1. 打开 GUI 监控工具: `pm2 monit`
    2. 升级全局 pm2 后刷新服务: `pm2 update`
-
-## TODO
-* 解决中文角色名乱码的问题
