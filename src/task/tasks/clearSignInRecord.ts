@@ -1,4 +1,4 @@
-import { usePrisma } from "../../db/index.js"
+import { usePrisma } from '../../db/index.js'
 
 /**
  * 每月初清理签到记录

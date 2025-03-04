@@ -43,11 +43,14 @@ const config = {
       cash: 1234,
       gold: 100000,
       items: [
-        { id: 36,     count: 66 }, // 喇叭 x66
-        { id: 666666, count: 1 },  // 深渊派对通行证 x1
-        { id: 3326,   count: 10 }, // 强烈的气息 x10
-        { id: 8292,   count: 1 },  // 1% +12 装备强化券 x1
-        { id: 8308,   count: 1 },  // 1% +12 装备增幅券 x1
+        { id: 36,       count: 66 }, // 喇叭 x66
+        { id: 666666,   count: 1 },  // 深渊派对通行证 x1
+        { id: 3326,     count: 10 }, // 强烈的气息 x10
+        { id: 8292,     count: 1 },  // 1% +12 装备强化券 x1
+        { id: 8308,     count: 1 },  // 1% +12 装备增幅券 x1
+        { id: 2600029,  count: 5 },  // 阿拉德初阶格斗家 x5
+        { id: 2600261,  count: 3 },  // 28号 x3
+        { id: 88888892, count: 2 },  // 点卷随机礼盒 x2
       ],
     } as DnfReward,
     // 每月签到满多少天的额外奖励
@@ -73,18 +76,20 @@ const config = {
             { id: 3326,   count: 30 },  // 强烈的气息 x30
             { id: 8305,   count: 3 },   // 90% +7 装备强化卷 x3
             { id: 8321,   count: 2 },   // 90% +7 装备增幅卷 x2
+            { id: 88888892, count: 3 },  // 点卷随机礼盒 x3
           ],
         },
         minTrustLevel: 1,
       },
       6: {
         dailyReward: {
-          cash: 2345,
+          cash: 5000,
           items: [
             { id: 666666, count: 5 },   // 深渊派对通行证 x5
             { id: 3326,   count: 50 },  // 强烈的气息 x50
             { id: 8300,   count: 2 },   // 30% +10 装备强化卷 x2
             { id: 8316,   count: 1 },   // 30% +10 装备增幅卷 x1
+            { id: 88888892, count: 5 },  // 点卷随机礼盒 x5
           ],
         },
         minTrustLevel: 1,
@@ -99,6 +104,7 @@ const config = {
             { id: 3326,   count: 80 },  // 强烈的气息 x80
             { id: 8301,   count: 1 },   // 30% +12 装备强化卷 x1
             { id: 8317,   count: 1 },   // 30% +12 装备增幅卷 x1
+            { id: 88888892, count: 7 },  // 点卷随机礼盒 x7
           ],
         },
         minTrustLevel: 3,
@@ -114,6 +120,7 @@ const config = {
           { id: 3326,   count: 80 },  // 强烈的气息 x80
           { id: 8298,   count: 2 },   // 10% +12 装备强化卷 x2
           { id: 8314,   count: 1 },   // 10% +12 装备增幅卷 x1
+          { id: 88888892, count: 9 },  // 点卷随机礼盒 x9
         ],
         minTrustLevel: 1,
       },
@@ -127,6 +134,7 @@ const config = {
           { id: 3326,   count: 100 },  // 强烈的气息 x100
           { id: 8301,   count: 2 },    // 30% +12 装备强化卷 x2
           { id: 8317,   count: 2 },    // 30% +12 装备增幅卷 x2
+          { id: 88888892, count: 11 },  // 点卷随机礼盒 x11
         ],
         minTrustLevel: 3,
       },
@@ -138,6 +146,7 @@ const config = {
             { id: 3326,   count: 100 },  // 强烈的气息 x100
             { id: 8301,   count: 1 },    // 30% +12 装备强化卷 x1
             { id: 8317,   count: 1 },    // 30% +12 装备增幅卷 x1
+            { id: 88888892, count: 13 },  // 点卷随机礼盒 x13
           ],
         },
         minTrustLevel: 1,
@@ -152,6 +161,7 @@ const config = {
             { id: 3326,   count: 150 },  // 强烈的气息 x150
             { id: 8304,   count: 1 },    // 50% +12 装备强化卷 x1
             { id: 8320,   count: 1 },    // 50% +12 装备增幅卷 x1
+            { id: 88888892, count: 15 },  // 点卷随机礼盒 x15
           ],
         },
         minTrustLevel: 3,
@@ -166,6 +176,7 @@ const config = {
             { id: 3326,   count: 150 },  // 强烈的气息 x150
             { id: 8304,   count: 1 },    // 50% +12 装备强化卷 x1
             { id: 8320,   count: 1 },    // 50% +12 装备增幅卷 x1
+            { id: 88888892, count: 17 },  // 点卷随机礼盒 x17
           ],
         },
         minTrustLevel: 1,
@@ -179,6 +190,7 @@ const config = {
             { id: 3326,   count: 300 },  // 强烈的气息 x300
             { id: 7275,   count: 1 },    // +12 装备强化卷 x1
             { id: 8237,   count: 1 },    // +12 装备增幅卷 x1
+            { id: 88888892, count: 19 },  // 点卷随机礼盒 x19
           ],
         },
         minTrustLevel: 3,
