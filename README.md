@@ -1,7 +1,7 @@
 # LinuxDo DOF Service
 LinuxDo DOF - 服务端
 
-[配套前端](https://github.com/Cat7373/linuxdo-dof-ui) | [LinuxDo DOF 公益服筹建贴](https://linux.do/t/topic/458099) | [DNF 服务器 Docker 版仓库](https://github.com/1995chen/dnf)
+[配套前端](https://github.com/Cat7373/linuxdo-dof-ui) | [LinuxDo DOF 公益服](https://linux.do/t/topic/472401?u=cat73) | [DNF 服务器 Docker 版仓库](https://github.com/1995chen/dnf)
 
 ## 功能
 1. LinuxDo 登录
