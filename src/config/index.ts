@@ -33,6 +33,7 @@ const config = {
     listen: '127.0.0.1',
     sessionTimeoutDays: 5,
   },
+  guildId: 1, // 自动加入的公会 ID
   dnfMailSender: 'LinuxDo', // DNF 中邮件发送人的名字
   // 注册送多少点卷 (注册时无角色，只能发点卷)
   registerCash: 8888,
@@ -64,7 +65,7 @@ const config = {
             { id: 8308, count: 3 },  // 1% +12 装备增幅券 x3
           ],
         },
-        minTrustLevel: 1,
+        minTrustLevel: 2,
       },
       3: { // 3 天 - 117 点卷 - 200000 金币 - 1% +12 装备强化券 x2 - 1% +12 装备增幅券 x1
         dailyReward: {
@@ -79,7 +80,7 @@ const config = {
             { id: 88888892, count: 3 },  // 点卷随机礼盒 x3
           ],
         },
-        minTrustLevel: 1,
+        minTrustLevel: 2,
       },
       6: {
         dailyReward: {
@@ -92,7 +93,7 @@ const config = {
             { id: 88888892, count: 5 },  // 点卷随机礼盒 x5
           ],
         },
-        minTrustLevel: 1,
+        minTrustLevel: 2,
       },
       9: { // 三级专享
         dailyReward: {
@@ -122,7 +123,7 @@ const config = {
             { id: 88888892, count: 9 },  // 点卷随机礼盒 x9
           ],
         },
-        minTrustLevel: 1,
+        minTrustLevel: 2,
       },
       15: { // 三级专享
         dailyReward: {
@@ -149,7 +150,7 @@ const config = {
             { id: 88888892, count: 13 },  // 点卷随机礼盒 x13
           ],
         },
-        minTrustLevel: 1,
+        minTrustLevel: 2,
       },
       21: { // 三级专享
         dailyReward: {
@@ -179,7 +180,7 @@ const config = {
             { id: 88888892, count: 17 },  // 点卷随机礼盒 x17
           ],
         },
-        minTrustLevel: 1,
+        minTrustLevel: 2,
       },
       27: { // 三级专享
         dailyReward: {
@@ -205,7 +206,7 @@ const config = {
             { id: 8323,   count: 2 },    // 90% +12 装备增幅卷 x2
           ],
         },
-        minTrustLevel: 1,
+        minTrustLevel: 2,
       },
     } as Record<number, SignInReward>,
   },

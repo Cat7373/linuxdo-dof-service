@@ -39,8 +39,8 @@ class UserTool {
       if (linuxDoUserInfo.silenced) { // 用户被禁言，禁止注册
         return useResult().fail('您当前已被 LinuxDo 禁言，暂时无法注册账号')
       }
-      if (linuxDoUserInfo.trust_level < 2) { // 用户信任等级不足，禁止注册，以避免太容易的注册小号
-        return useResult().fail('您需要在 LinuxDo 升级到 2 级才能注册，请先多摸摸鱼喵，升级引导：https://linux.do/t/topic/2460')
+      if (linuxDoUserInfo.trust_level < 1) { // 用户信任等级不足，禁止注册，以避免太容易的注册小号
+        return useResult().fail('您需要在 LinuxDo 升级到 1 级才能注册，请先多摸摸鱼喵，升级引导：https://linux.do/t/topic/2460')
       }
 
       await usePrisma().user.create({
