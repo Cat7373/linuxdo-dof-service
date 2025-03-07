@@ -27,7 +27,7 @@ export const dofMaintenanceSql10m = async () => {
     WHERE (SELECT COUNT(*) FROM d_guild.guild_member WHERE d_guild.guild_member.charac_no = taiwan_cain.charac_info.charac_no) <= 0;
 
     -- 更新公会成员为优秀级
-    UPDATE d_guild.guild_member SET grade = 3 WHERE guild_id = 1 AND grade < 3;
+    UPDATE d_guild.guild_member SET grade = 3 WHERE guild_id = 1 AND grade IN (0, 4);
 
     -- 更新公会会员数
     UPDATE d_guild.guild_info
