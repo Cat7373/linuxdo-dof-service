@@ -30,7 +30,7 @@ export async function sendReward(dnfId: number, characId: number | null, reward:
   }
 
   // 发放物品
-  if (reward.items) {
+  if (reward.items && characId) {
     for (const item of reward.items) {
       const endTime = Math.ceil((Date.now() - 1151683200000) / 86400000) + 30
       await useKnex().raw(`INSERT INTO taiwan_cain_2nd.postal (occ_time, send_charac_name, receive_charac_no, item_id, add_info, endurance) VALUES ('${dayjs().format('YYYY-MM-DD HH:mm:ss')}', '${config.dnfMailSender}', ${characId}, ${item.id}, ${item.count}, ${endTime})`)
