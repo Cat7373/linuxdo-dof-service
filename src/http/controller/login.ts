@@ -4,6 +4,7 @@ import { CheckInput, koaFirstQueryParam, useSession } from '../util/index.js'
 import { fetchLinuxDoToken, fetchLinuxDoUserInfo } from '../../api/api.js'
 import { useUserTool } from '../../db/tool/user.js'
 import { useEnv } from '../../util/env.js'
+import config from '../../config/index.js'
 
 /**
  * 登录接口
@@ -51,6 +52,11 @@ class LoginController {
     const userInfoResp = await fetchLinuxDoUserInfo(tokenResp.data.access_token)
     if (!userInfoResp.data?.id) {
       return useResult().fail(`从 LinuxDo 获取用户信息失败，错误原因: ${userInfoResp?.data?.detail || '未知错误'}`)
+    }
+
+    // 禁止登录的账号
+    if (config.banList.find(banUser => banUser.linuxDoUid === userInfoResp.data.id)) {
+      return ctx.body = useResult().fail('您的账号已被封禁，请私信论坛 Cat73 或回贴沟通', -2)
     }
 
     // 登录账号(若未注册则帮其注册)
