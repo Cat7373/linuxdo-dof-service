@@ -56,7 +56,7 @@ class LoginController {
 
     // 禁止登录的账号
     if (config.banList.find(banUser => banUser.linuxDoUid === userInfoResp.data.id)) {
-      return ctx.body = useResult().fail('您的账号已被封禁，请私信论坛 Cat73 或回贴沟通', -2)
+      return ctx.body = useResult().fail('您的账号已被封禁，请私信论坛 Cat73 或回贴沟通')
     }
 
     // 登录账号(若未注册则帮其注册)
