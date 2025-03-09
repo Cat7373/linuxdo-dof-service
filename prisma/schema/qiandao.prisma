@@ -1,0 +1,6 @@
+/// 用户签到记录表
+model UserSignInRecord {
+  id   Int  @id @default(autoincrement()) @db.UnsignedInt
+  uid  Int  @unique @db.UnsignedInt /// 用户 ID
+  days Json /// 签到日清单 [int]
+}

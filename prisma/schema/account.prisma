@@ -1,0 +1,58 @@
+/// 账本类型
+enum AccountBookType {
+  POINT /// 积分
+}
+
+/// 账本
+model AccountBook {
+  id      Int             @id @default(autoincrement()) @db.UnsignedInt
+  oid     Int             @db.UnsignedInt /// 实体 ID，没有请给 0
+  type    AccountBookType /// 账本类型
+  extId   Int             @db.UnsignedInt /// 扩展 ID，没有请给 0
+  balance Decimal         @db.Decimal(12, 2) /// 金额(±9999999999.99)
+  addtime DateTime        @db.DateTime(0) /// 账本创建时间
+
+  // 外键
+  AccountBookItem AccountBookItem[]
+
+  @@unique([oid, type, extId]) /// 快速查账本索引
+}
+
+/// 账本变更明细
+model AccountBookItem {
+  id      Int      @id @default(autoincrement()) @db.UnsignedInt
+  oid     Int      @db.UnsignedInt /// 实体 ID
+  bookId  Int      @db.UnsignedInt /// 账本 ID
+  logId   Int      @db.UnsignedInt /// 账本日志 ID
+  change  Decimal  @db.Decimal(12, 2) /// 变更值
+  origin  Decimal  @db.Decimal(12, 2) /// 初始值
+  result  Decimal  @db.Decimal(12, 2) /// 结果值
+  addtime DateTime @db.DateTime(3) /// 操作时间
+
+  // 外键
+  accountBook AccountBook    @relation(fields: [bookId], references: [id])
+  accountLog  AccountBookLog @relation(fields: [logId], references: [id])
+
+  @@index([bookId, logId]) /// 快速查交易索引
+}
+
+/// 账本操作类型日志
+enum AccountLogType {
+  CHECK_IN /// 签到奖励
+
+  FU_LI_DUI_HUAN_PAY /// 福利兑换活动支付
+}
+
+/// 账本变更日志
+model AccountBookLog {
+  id      Int            @id @default(autoincrement()) @db.UnsignedInt
+  source  String         @db.VarChar(255) /// 操作来源
+  type    AccountLogType /// 操作类型
+  addtime DateTime       @db.DateTime(3) /// 操作时间
+  note    String         @db.VarChar(255) /// 备注
+
+  // 外键
+  AccountBookItem AccountBookItem[]
+
+  @@index([source, type, addtime]) /// 快速查交易索引
+}

@@ -7,6 +7,7 @@ import { useLog } from '../util/log.js'
 import config from '../config/index.js'
 import { useResult } from '../util/result.js'
 import { useEnv } from '../util/env.js'
+import { useSession } from './util/index.js'
 
 const AUTH_WHITE_LIST = [
   '/api/dev/dev',
@@ -43,6 +44,12 @@ export async function useHttpService() {
       // 检查是否已经登陆
       if (!ctx.session?.uid) {
         return ctx.body = useResult().fail('登陆过期，请重新登陆', -2)
+      }
+
+      // 禁止登录的账号
+      if (config.banList.find(banUser => banUser.linuxDoUid === useSession(ctx)!.linuxDoUid)) {
+        ctx.session = null
+        return ctx.body = useResult().fail('您的账号已被封禁，请私信论坛 Cat73 或回贴沟通', -2)
       }
 
       return await next()

@@ -1,7 +1,7 @@
 import { scheduleJob } from 'node-schedule'
 import { useLog } from '../util/log.js'
 import { clearSignInRecord } from './tasks/clearSignInRecord.js'
-import { dofMaintenanceSql1m, dofMaintenanceSql10m } from './tasks/dofMaintenanceSql.js'
+import { dofMaintenanceSql10s, dofMaintenanceSql1m, dofMaintenanceSql10m } from './tasks/dofMaintenanceSql.js'
 
 // 防止重入
 const preventReEntryStatus: Map<string, boolean> = new Map()
@@ -35,7 +35,8 @@ function safeScheduleJob(name: string, rule: string, code: () => Promise<void>) 
 export async function useTasks() {
   // 每月初的 00:00:01 清理签到记录
   safeScheduleJob('clearSignInRecord', '1 0 0 1 * *', clearSignInRecord)
-  // 每分钟维护数据库
+  // 维护 DOF 数据库
+  safeScheduleJob('dofMaintenanceSql10s', '0 * * * * *', dofMaintenanceSql10s)
   safeScheduleJob('dofMaintenanceSql1m', '0 * * * * *', dofMaintenanceSql1m)
   safeScheduleJob('dofMaintenanceSql10m', '0 * * * * *', dofMaintenanceSql10m)
 
