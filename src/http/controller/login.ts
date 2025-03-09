@@ -7,6 +7,7 @@ import { useEnv } from '../../util/env.js'
 import config from '../../config/index.js'
 import { useTOTP } from '../../util/totp.js'
 import { User } from '@prisma/client'
+import dayjs from 'dayjs'
 
 /**
  * 登录接口
@@ -68,9 +69,9 @@ class LoginController {
       }
 
       // 禁止登录的账号
-      const banUser = config.banList.find(banUser => banUser.linuxDoUid === userInfoResp.data.id)
+      const banUser = config.banList.find(banUser => banUser.linuxDoUid === userInfoResp.data.id && banUser.endTime > new Date())
       if (banUser) {
-        return ctx.body = useResult().fail(`您的账号已被封禁，原因: "${banUser.reason}"，请私信论坛 Cat73 或回贴沟通`)
+        return ctx.body = useResult().fail(`您的账号已被封禁，原因: "${banUser.reason}"，结束时间: ${dayjs(banUser.endTime).format('YYYY-MM-DD HH:mm')}，请私信论坛 Cat73 或回贴沟通`)
       }
 
       // 登录账号(若未注册则帮其注册)

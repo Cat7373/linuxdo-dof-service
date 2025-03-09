@@ -8,6 +8,7 @@ import config from '../config/index.js'
 import { useResult } from '../util/result.js'
 import { useEnv } from '../util/env.js'
 import { useSession } from './util/index.js'
+import dayjs from 'dayjs'
 
 const AUTH_WHITE_LIST = [
   '/api/dev/dev',
@@ -46,9 +47,9 @@ export async function useHttpService() {
         return ctx.body = useResult().fail('登陆过期，请重新登陆', -2)
       }
 
-      const banUser = config.banList.find(banUser => banUser.linuxDoUid === useSession(ctx)!.linuxDoUid)
+      const banUser = config.banList.find(banUser => banUser.linuxDoUid === useSession(ctx)!.linuxDoUid && banUser.endTime > new Date())
       if (banUser) {
-        return ctx.body = useResult().fail(`您的账号已被封禁，原因: "${banUser.reason}"，请私信论坛 Cat73 或回贴沟通`)
+        return ctx.body = useResult().fail(`您的账号已被封禁，原因: "${banUser.reason}"，结束时间: ${dayjs(banUser.endTime).format('YYYY-MM-DD HH:mm')}，请私信论坛 Cat73 或回贴沟通`)
       }
 
       return await next()
