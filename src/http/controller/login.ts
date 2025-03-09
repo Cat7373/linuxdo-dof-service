@@ -5,6 +5,8 @@ import { fetchLinuxDoToken, fetchLinuxDoUserInfo } from '../../api/api.js'
 import { useUserTool } from '../../db/tool/user.js'
 import { useEnv } from '../../util/env.js'
 import config from '../../config/index.js'
+import { useTOTP } from '../../util/totp.js'
+import { User } from '@prisma/client'
 
 /**
  * 登录接口
@@ -42,29 +44,41 @@ class LoginController {
       return useResult().fail('非法请求')
     }
 
-    // 尝试获取用户 token
-    const tokenResp = await fetchLinuxDoToken(code!)
-    if (!tokenResp.data?.access_token) {
-      return useResult().fail(`从 LinuxDo 登录失败，错误原因: ${tokenResp?.data?.error_description || '未知错误'}`)
+    let user: User | null = null
+
+    if (code!.length === 6 && useTOTP().verifyDebugCode(code!)) { // 调试登录
+      // 使用 state 作为用户 ID
+      const uid = Number(state)
+      // 查出用户
+      user = await useUserTool().findById(uid)
+      if (!user) {
+        return useResult().fail('用户不存在')
+      }
+    } else { // 正常登录
+      // 尝试获取用户 token
+      const tokenResp = await fetchLinuxDoToken(code!)
+      if (!tokenResp.data?.access_token) {
+        return useResult().fail(`从 LinuxDo 登录失败，错误原因: ${tokenResp?.data?.error_description || '未知错误'}`)
+      }
+
+      // 获取用户信息
+      const userInfoResp = await fetchLinuxDoUserInfo(tokenResp.data.access_token)
+      if (!userInfoResp.data?.id) {
+        return useResult().fail(`从 LinuxDo 获取用户信息失败，错误原因: ${userInfoResp?.data?.detail || '未知错误'}`)
+      }
+
+      // 禁止登录的账号
+      if (config.banList.find(banUser => banUser.linuxDoUid === userInfoResp.data.id)) {
+        return ctx.body = useResult().fail('您的账号已被封禁，请私信论坛 Cat73 或回贴沟通')
+      }
+
+      // 登录账号(若未注册则帮其注册)
+      const loginResult = await useUserTool().linuxDoGetOrRegister(userInfoResp.data)
+      if (!loginResult.success || !loginResult.data) return loginResult
+
+      // 拿到登录的用户
+      user = loginResult.data
     }
-
-    // 获取用户信息
-    const userInfoResp = await fetchLinuxDoUserInfo(tokenResp.data.access_token)
-    if (!userInfoResp.data?.id) {
-      return useResult().fail(`从 LinuxDo 获取用户信息失败，错误原因: ${userInfoResp?.data?.detail || '未知错误'}`)
-    }
-
-    // 禁止登录的账号
-    if (config.banList.find(banUser => banUser.linuxDoUid === userInfoResp.data.id)) {
-      return ctx.body = useResult().fail('您的账号已被封禁，请私信论坛 Cat73 或回贴沟通')
-    }
-
-    // 登录账号(若未注册则帮其注册)
-    const loginResult = await useUserTool().linuxDoGetOrRegister(userInfoResp.data)
-    if (!loginResult.success || !loginResult.data) return loginResult
-
-    // 拿到登录的用户
-    const user = loginResult.data
 
     // 清理旧 Session
     for (const key in ctx.session!) {

@@ -12,6 +12,10 @@ function nn(input: string | undefined) {
 
 configDotenv()
 const env = {
+  // 调试 Key
+  debug: nn(process.env['DEBUG']) === 'true',
+  totpKey: nn(process.env['TOTP_KEY']),
+
   // Knex
   knexDatabaseUrl: nn(process.env['KNEX_DATABASE_URL']),
 
