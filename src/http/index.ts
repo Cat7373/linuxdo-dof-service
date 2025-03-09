@@ -46,10 +46,9 @@ export async function useHttpService() {
         return ctx.body = useResult().fail('登陆过期，请重新登陆', -2)
       }
 
-      // 禁止登录的账号
-      if (config.banList.find(banUser => banUser.linuxDoUid === useSession(ctx)!.linuxDoUid)) {
-        ctx.session = null
-        return ctx.body = useResult().fail('您的账号已被封禁，请私信论坛 Cat73 或回贴沟通', -2)
+      const banUser = config.banList.find(banUser => banUser.linuxDoUid === useSession(ctx)!.linuxDoUid)
+      if (banUser) {
+        return ctx.body = useResult().fail(`您的账号已被封禁，原因: "${banUser.reason}"，请私信论坛 Cat73 或回贴沟通`)
       }
 
       return await next()
