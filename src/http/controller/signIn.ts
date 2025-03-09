@@ -85,9 +85,9 @@ class SignInController {
 
       // 发放签到奖励
       await useKnexTransaction(async () => {
-        await sendReward(user.dnfId!, user.dnfBindCharacId, dailyReward)
+        await sendReward(user.id, user.dnfId!, user.dnfBindCharacId, dailyReward)
         if (cumulativeReward) {
-          await sendReward(user.dnfId!, user.dnfBindCharacId, cumulativeReward)
+          await sendReward(user.id, user.dnfId!, user.dnfBindCharacId, cumulativeReward)
         }
       })
 

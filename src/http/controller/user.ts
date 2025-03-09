@@ -6,6 +6,8 @@ import { useUserTool } from '../../db/tool/user.js'
 import config from '../../config/index.js'
 import { useKnex, useKnexTransaction } from '../../db/knex.js'
 import { convertDnfString } from '../../util/index.js'
+import { useAccountBookTool } from '../../db/tool/accountBook.js'
+import { AccountBookType } from '@prisma/client'
 
 // 注册 DNF 账号请求数据
 interface RegisterDnfAccountBody { dnfUsername: string, dnfPassword: string }
@@ -150,6 +152,7 @@ class UserController {
   async info(ctx: Context): Promise<ResultObj> {
     const uid = useSession(ctx)!.uid
     const user = (await useUserTool().findById(uid))!
+    const pointBalance = await useAccountBookTool().balanceOf(uid, AccountBookType.POINT)
    
     // 返回结果
     return useResult().success({
@@ -161,6 +164,8 @@ class UserController {
       linuxDoName: user.linuxDoName,
       linuxDoUsername: user.linuxDoUsername,
       linuxDoTrustLevel: user.linuxDoTrustLevel,
+
+      pointBalance,
     })
   }
 }

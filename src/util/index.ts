@@ -3,6 +3,8 @@ import config, { DnfReward } from "../config/index.js"
 import { useKnex } from "../db/knex.js"
 import { Buffer } from 'buffer'
 import iconv from 'iconv-lite'
+import { useAccountBookTool } from "../db/tool/accountBook.js"
+import { AccountBookType, AccountLogType, Prisma } from "@prisma/client"
 
 /**
  * 等待一会
@@ -14,11 +16,12 @@ export function sleep(duration: number): Promise<void> {
 
 /**
  * 发放签到奖励 (注意，无事务保护，请外部自行处理)
+ * @param uid 用户 ID
  * @param dnfId DNF 账号 ID
  * @param characId 角色 ID (未绑定传空，则这块奖励不发放)
  * @param reward 奖励内容
  */
-export async function sendReward(dnfId: number, characId: number | null, reward: DnfReward) {
+export async function sendReward(uid: number, dnfId: number, characId: number | null, reward: DnfReward) {
   // 发放点卷
   if (reward.cash) {
     await useKnex().raw(`UPDATE taiwan_billing.cash_cera_point SET cera_point = cera_point + ${reward.cash} WHERE account = ${dnfId}`)
@@ -27,6 +30,13 @@ export async function sendReward(dnfId: number, characId: number | null, reward:
   // 发放金币 (附件带一个无色小晶体)
   if (reward.gold && characId) {
     await useKnex().raw(`INSERT INTO taiwan_cain_2nd.postal (occ_time, send_charac_name, receive_charac_no, item_id, add_info, gold) VALUES ('${dayjs().format('YYYY-MM-DD HH:mm:ss')}', '${config.dnfMailSender}', ${characId}, 3037, 1, ${reward.gold})`)
+  }
+
+  // 发放积分
+  if (reward.point) {
+    await useAccountBookTool().items(uid)
+      .item(AccountBookType.POINT, new Prisma.Decimal(reward.point))
+      .log(String(uid), AccountLogType.CHECK_IN)
   }
 
   // 发放物品
