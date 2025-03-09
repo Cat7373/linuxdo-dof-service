@@ -38,7 +38,7 @@ const config = {
     listen: '127.0.0.1',
     sessionTimeoutDays: 5,
   },
-  // 禁止登录的账号列表 (LinuxDo 用户 ID)
+  // 禁止登录的账号列表
   banList: [
     { linuxDoUid: 38979, linuxDoName: 'Haru577', dofUid: 18000101, reason: '用喇叭发垃圾信息刷屏，经警告后仍继续' },
   ] as Array<BanUser>,
