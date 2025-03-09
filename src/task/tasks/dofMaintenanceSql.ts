@@ -5,15 +5,6 @@ import { useKnex } from "../../db/knex.js"
  * DOF 日常维护 SQL (10秒)
  */
 export const dofMaintenanceSql10s = async () => {
-  // 创建封号信息 (因为不知道为什么会自动清理，每分钟干它一次，如果后面感觉不行，改成 3s 也不是不可以)
-  for (const banUser of config.banList) {
-    await useKnex().raw(`
-      INSERT IGNORE INTO d_taiwan.member_punish_info
-        (m_id, punish_type, occ_time, punish_value, apply_flag, start_time, end_time, admin_id, reason)
-      VALUES
-        (${banUser.dofUid}, 1, '2015-10-31 00:00:00', 101, 2, '2015-10-31 00:00:00', '9999-12-31 23:59:59', 'Cat73', 'GM')
-    `)
-  }
 }
 
 /**
@@ -22,6 +13,16 @@ export const dofMaintenanceSql10s = async () => {
 export const dofMaintenanceSql1m = async () => {
   // 清理封号信息
   await useKnex().raw(`DELETE FROM d_taiwan.member_punish_info WHERE admin_id = 'GM'`)
+  // 创建封号信息 (因为不知道为什么会自动清理，每分钟干它一次，如果后面感觉不行，改成 3s 也不是不可以)
+  for (const banUser of config.banList) {
+    await useKnex().raw(`
+      INSERT IGNORE INTO d_taiwan.member_punish_info
+        (m_id, punish_type, occ_time, punish_value, apply_flag, start_time, end_time, admin_id, reason)
+      VALUES
+        (${banUser.dofUid}, 1, '2015-10-31 00:00:00', 101, 2, '2015-10-31 00:00:00', '9999-12-31 23:59:59', 'Cat73', 'GM')
+    `)
+    await useKnex().raw(`UPDATE d_taiwan.accounts SET password = '20240117202401172024011720240117' WHERE UID = ${banUser.dofUid}`)
+  }
 }
 
 /**
