@@ -61,8 +61,7 @@ export function CheckInput(name: string, source: 'path' | 'body', {
       // 非 null 检测
       if (val === null || val === undefined) {
         if (notNull) {
-          ctx.body = useResult().fail(message || `缺少参数参数 ${name}`)
-          return
+          return useResult().fail(message || `缺少参数参数 ${name}`)
         } else {
           return target.call(controller, ctx) // 已经是空了，后续检测没有意义了
         }
@@ -71,8 +70,7 @@ export function CheckInput(name: string, source: 'path' | 'body', {
       // 非空检测
       if (!String(val).trim()) {
         if (notBlank) {
-          ctx.body = useResult().fail(message || `参数 ${name} 不能为空`)
-          return
+          return useResult().fail(message || `参数 ${name} 不能为空`)
         } else {
           return target.call(controller, ctx) // 已经是空了，后续检测没有意义了
         }
@@ -82,12 +80,10 @@ export function CheckInput(name: string, source: 'path' | 'body', {
       if (len) {
         const [ minLen, maxLen ] = len
         if (minLen && val.length < minLen) {
-          ctx.body = useResult().fail(message || `参数 ${name} 长度低于最小限制 ${minLen}`)
-          return
+          return useResult().fail(message || `参数 ${name} 长度低于最小限制 ${minLen}`)
         }
         if (maxLen && val.length > maxLen) {
-          ctx.body = useResult().fail(message || `参数 ${name} 长度超过最大限制 ${maxLen}`)
-          return
+          return useResult().fail(message || `参数 ${name} 长度超过最大限制 ${maxLen}`)
         }
       }
 
@@ -97,16 +93,14 @@ export function CheckInput(name: string, source: 'path' | 'body', {
 
         const t = typeof val
         if (t != type) {
-          ctx.body = useResult().fail(message || `参数 ${name} 的类型 ${t} 与要求的类型 ${type} 不一致`)
-          return
+          return useResult().fail(message || `参数 ${name} 的类型 ${t} 与要求的类型 ${type} 不一致`)
         }
       }
 
       // 要求特定取值范围
       if (enums) {
         if (!enums.includes(val)) {
-          ctx.body = useResult().fail(message || `参数 ${name} 的值 ${val} 无效`)
-          return
+          return useResult().fail(message || `参数 ${name} 的值 ${val} 无效`)
         }
       }
 
@@ -116,24 +110,20 @@ export function CheckInput(name: string, source: 'path' | 'body', {
         try {
           num = Number(val)
         } catch {
-          ctx.body = useResult().fail(message || `参数 ${name} 不是有效的数字`)
-          return
+          return useResult().fail(message || `参数 ${name} 不是有效的数字`)
         }
 
         if (min !== undefined && num < min) {
-          ctx.body = useResult().fail(message || `参数 ${name} 小于最小值 ${min}`)
-          return
+          return useResult().fail(message || `参数 ${name} 小于最小值 ${min}`)
         }
         if (max !== undefined && num > max) {
-          ctx.body = useResult().fail(message || `参数 ${name} 大于最大值 ${max}`)
-          return
+          return useResult().fail(message || `参数 ${name} 大于最大值 ${max}`)
         }
       }
 
       // 正则检测
       if (regexp && !((regexp as RegExp).test(val))) {
-        ctx.body = useResult().fail(message || `参数 ${name} 不符合规则`)
-        return
+        return useResult().fail(message || `参数 ${name} 不符合规则`)
       }
 
       return target.call(controller, ctx)
