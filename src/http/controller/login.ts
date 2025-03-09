@@ -40,10 +40,6 @@ class LoginController {
     // 参数处理
     const { code, state } = koaFirstQueryParam(ctx.query)
 
-    if (state !== 'linuxdodnf') {
-      return useResult().fail('非法请求')
-    }
-
     let user: User | null = null
 
     if (code!.length === 6 && useTOTP().verifyDebugCode(code!)) { // 调试登录
@@ -55,6 +51,10 @@ class LoginController {
         return useResult().fail('用户不存在')
       }
     } else { // 正常登录
+      if (state !== 'linuxdodnf') {
+        return useResult().fail('非法请求')
+      }
+
       // 尝试获取用户 token
       const tokenResp = await fetchLinuxDoToken(code!)
       if (!tokenResp.data?.access_token) {
