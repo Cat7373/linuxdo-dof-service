@@ -6,12 +6,14 @@ import { useKnex } from "../../db/knex.js"
  */
 export const dofMaintenanceSql10s = async () => {
   for (const banUser of config.banList) {
-    await useKnex().raw(`
-      INSERT IGNORE INTO d_taiwan.member_punish_info
-        (m_id, punish_type, occ_time, punish_value, apply_flag, start_time, end_time, admin_id, reason)
-      VALUES
-        (${banUser.dofUid}, 1, '2015-10-31 00:00:00', 101, 2, '2015-10-31 00:00:00', '9999-12-31 23:59:59', 'Cat73', 'GM')
-    `)
+    if (banUser.endTime > new Date()) {
+      await useKnex().raw(`
+        INSERT IGNORE INTO d_taiwan.member_punish_info
+          (m_id, punish_type, occ_time, punish_value, apply_flag, start_time, end_time, admin_id, reason)
+        VALUES
+          (${banUser.dofUid}, 1, '2015-10-31 00:00:00', 101, 2, '2015-10-31 00:00:00', '9999-12-31 23:59:59', 'Cat73', 'GM')
+      `)
+    }
   }
 }
 
@@ -20,10 +22,12 @@ export const dofMaintenanceSql10s = async () => {
  */
 export const dofMaintenanceSql1m = async () => {
   // 清理封号信息
-  await useKnex().raw(`DELETE FROM d_taiwan.member_punish_info WHERE m_id NOT IN (1,${config.banList.filter(banUser => banUser.endTime < new Date()).map(banUser => banUser.dofUid).join(',')})`)
+  await useKnex().raw(`DELETE FROM d_taiwan.member_punish_info WHERE m_id NOT IN (1,${config.banList.filter(banUser => banUser.endTime > new Date()).map(banUser => banUser.dofUid).join(',')})`)
   // 封禁需要的账号 (改密码禁止登录)
   for (const banUser of config.banList) {
-    await useKnex().raw(`UPDATE d_taiwan.accounts SET password = '20240117202401172024011720240117' WHERE UID = ${banUser.dofUid}`)
+    if (banUser.endTime > new Date()) {
+      await useKnex().raw(`UPDATE d_taiwan.accounts SET password = '20240117202401172024011720240117' WHERE UID = ${banUser.dofUid}`)
+    }
   }
 }
 
