@@ -22,7 +22,8 @@ export const dofMaintenanceSql10s = async () => {
  */
 export const dofMaintenanceSql1m = async () => {
   // 清理封号信息
-  await useKnex().raw(`DELETE FROM d_taiwan.member_punish_info WHERE m_id NOT IN (1,${config.banList.filter(banUser => banUser.endTime > new Date()).map(banUser => banUser.dofUid).join(',')})`)
+  const banUserIds = config.banList.filter(banUser => banUser.endTime > new Date())
+  await useKnex().raw(`DELETE FROM d_taiwan.member_punish_info WHERE m_id NOT IN (${banUserIds.length > 0 ? banUserIds.map(banUser => banUser.dofUid).join(',') : '1'})`)
   // 封禁需要的账号 (改密码禁止登录)
   for (const banUser of config.banList) {
     if (banUser.endTime > new Date()) {
