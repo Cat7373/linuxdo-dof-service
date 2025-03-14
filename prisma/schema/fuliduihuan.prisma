@@ -35,10 +35,20 @@ model FuLiDuiHuanOrder {
   uid     Int      @db.UnsignedInt /// 用户 ID
   goodsId Int      @db.UnsignedInt /// 商品 ID
   count   Int      @db.UnsignedInt /// 兑换数量
-  addtime DateTime @default(now()) /// 创建时间
+  addtime DateTime /// 创建时间
   date    String   @db.VarChar(10) /// 兑换日期
 
   // 外键
   user  User             @relation(fields: [uid], references: [id])
   goods FuLiDuiHuanGoods @relation(fields: [goodsId], references: [id])
+}
+
+/// 许愿记录
+model FuLiDuiHuanWish {
+  id Int @id @default(autoincrement()) @db.UnsignedInt
+
+  uid     Int      @db.UnsignedInt /// 用户 ID
+  wish    String   @db.VarChar(250) /// 许愿内容
+  addtime DateTime /// 许愿时间
+  date    String   @db.VarChar(10) /// 许愿日期
 }

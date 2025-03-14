@@ -11,6 +11,8 @@ import { useKnexTransaction } from '../../db/knex.js'
 
 // 兑换请求参数
 interface BuyBody { goodsId: number, count: number }
+// 许愿请求参数
+interface WishBody { wish: string }
 
 /**
  * 福利兑换接口
@@ -56,7 +58,7 @@ class FuLiDuiHuanController {
 
   /**
    * 兑换
-   * GET /api/fuliduihuan/buy
+   * POST /api/fuliduihuan/buy
    */
   @CheckInput('goodsId', 'body', { type: 'number' })
   @CheckInput('count', 'body', { type: 'number' })
@@ -125,6 +127,39 @@ class FuLiDuiHuanController {
       // 返回结果
       return useResult().success()
     })
+  }
+
+  /**
+   * 许愿
+   * POST /api/fuliduihuan/wish
+   */
+  @CheckInput('wish', 'body', { type: 'string', len: [1, 240] })
+  async wish(ctx: Context): Promise<ResultObj<any>> {
+    // 处理参数
+    const { wish } = ctx.request.body as WishBody
+    const uid = useSession(ctx)!.uid
+
+    // 检查今天是否许愿过
+    const todayWish = await usePrisma().fuLiDuiHuanWish.count({
+      where: {
+        uid,
+        date: dayjs().format('YYYY-MM-DD'),
+      },
+    })
+    if (todayWish >= 1) return useResult().fail('您今天已经许过愿了，请明天再许愿')
+
+    // 创建许愿记录
+    await usePrisma().fuLiDuiHuanWish.create({
+      data: {
+        uid,
+        wish,
+        addtime: new Date(),
+        date: dayjs().format('YYYY-MM-DD'),
+      },
+    })
+
+    // 返回结果
+    return useResult().success()
   }
 }
 

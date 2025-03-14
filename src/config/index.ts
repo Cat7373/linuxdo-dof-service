@@ -76,7 +76,7 @@ const config = {
         },
         minTrustLevel: 2,
       },
-      3: { // 3 天 - 117 点卷 - 200000 金币 - 1% +12 装备强化券 x2 - 1% +12 装备增幅券 x1
+      3: {
         dailyReward: {
           cash: 117, cashDisplay: '0117',
           point: 66,
