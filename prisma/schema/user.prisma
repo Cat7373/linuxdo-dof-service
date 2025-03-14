@@ -14,4 +14,7 @@ model User {
   linuxDoTrustLevel    Int      @db.UnsignedTinyInt /// LinuxDo 用户信任等级
   linuxDoSilenced      Boolean /// LinuxDo 用户是否被禁言
   linuxDoInfoUpdatTime DateTime @db.DateTime(3) /// LinuxDo 用户信息更新时间
+
+  // 外键
+  FuLiDuiHuanOrder FuLiDuiHuanOrder[]
 }

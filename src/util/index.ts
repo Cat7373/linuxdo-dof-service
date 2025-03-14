@@ -21,7 +21,7 @@ export function sleep(duration: number): Promise<void> {
  * @param characId 角色 ID (未绑定传空，则这块奖励不发放)
  * @param reward 奖励内容
  */
-export async function sendReward(uid: number, dnfId: number, characId: number | null, reward: DnfReward) {
+export async function sendDnfReward(uid: number, dnfId: number, characId: number | null, reward: DnfReward) {
   // 发放点卷
   if (reward.cash) {
     await useKnex().raw(`UPDATE taiwan_billing.cash_cera_point SET cera_point = cera_point + ${reward.cash} WHERE account = ${dnfId}`)
@@ -41,11 +41,20 @@ export async function sendReward(uid: number, dnfId: number, characId: number | 
 
   // 发放物品
   if (reward.items && characId) {
-    for (const itemId in reward.items) {
-      const itemCount = reward.items[itemId]
-      const endTime = Math.ceil((Date.now() - 1151683200000) / 86400000) + 30
-      await useKnex().raw(`INSERT INTO taiwan_cain_2nd.postal (occ_time, send_charac_name, receive_charac_no, item_id, add_info, endurance) VALUES ('${dayjs().format('YYYY-MM-DD HH:mm:ss')}', '${config.dnfMailSender}', ${characId}, ${itemId}, ${itemCount}, ${endTime})`)
-    }
+    await sendDnfMail(characId, reward.items)
+  }
+}
+
+/**
+ * 发放物品邮件 (注意，无事务保护，请外部自行处理)
+ * @param characId 角色 ID
+ * @param items 物品清单
+ */
+export async function sendDnfMail(characId: number, items: Record<number, number>) {
+  for (const itemId in items) {
+    const itemCount = items[itemId]
+    const endTime = Math.ceil((Date.now() - 1151683200000) / 86400000) + 30
+    await useKnex().raw(`INSERT INTO taiwan_cain_2nd.postal (occ_time, send_charac_name, receive_charac_no, item_id, add_info, endurance) VALUES ('${dayjs().format('YYYY-MM-DD HH:mm:ss')}', '${config.dnfMailSender}', ${characId}, ${itemId}, ${itemCount}, ${endTime})`)
   }
 }
 

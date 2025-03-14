@@ -1,14 +1,4 @@
-// /**
-//  * 福利兑换活动物品
-//  */
-// export interface FuLiDuiHuanItem {
-//   name?: string, // 显示名称
-//   cost: number, // 消耗的物品数量
-//   limit?: number, // 每日限购次数
-//   items: Record<number, number>, // 物品清单 <物品 ID, 物品数量>
-// }
-
-/// 福利兑换类型
+/// 商品类型
 model FuLiDuiHuanCategory {
   id Int @id @default(autoincrement()) @db.UnsignedInt
 
@@ -28,10 +18,27 @@ model FuLiDuiHuanGoods {
   name       String  @db.VarChar(50) /// 名称
   idx        Int     @db.UnsignedInt /// 顺序号
   show       Boolean /// 是否显示
-  limit      Int     @db.UnsignedInt /// 每日限购次数 (TODO 待实现)
+  limit      Int     @db.UnsignedInt /// 每日限购次数
+  price      Int     @db.UnsignedInt /// 价格
 
   items Json /// 物品清单 - Record<number, number> - <物品 ID, 物品数量>
 
   // 外键
-  category FuLiDuiHuanCategory @relation(fields: [categoryId], references: [id])
+  category         FuLiDuiHuanCategory @relation(fields: [categoryId], references: [id])
+  FuLiDuiHuanOrder FuLiDuiHuanOrder[]
+}
+
+/// 兑换记录
+model FuLiDuiHuanOrder {
+  id Int @id @default(autoincrement()) @db.UnsignedInt
+
+  uid     Int      @db.UnsignedInt /// 用户 ID
+  goodsId Int      @db.UnsignedInt /// 商品 ID
+  count   Int      @db.UnsignedInt /// 兑换数量
+  addtime DateTime @default(now()) /// 创建时间
+  date    String   @db.VarChar(10) /// 兑换日期
+
+  // 外键
+  user  User             @relation(fields: [uid], references: [id])
+  goods FuLiDuiHuanGoods @relation(fields: [goodsId], references: [id])
 }

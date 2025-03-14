@@ -6,7 +6,7 @@ import config, { DnfReward } from '../../config/index.js'
 import { useUserTool } from '../../db/tool/user.js'
 import { useKnexTransaction } from '../../db/knex.js'
 import items from '../../config/items.js'
-import { sendReward } from '../../util/index.js'
+import { sendDnfReward } from '../../util/index.js'
 
 /**
  * 签到接口 /api/signIn
@@ -85,9 +85,9 @@ class SignInController {
 
       // 发放签到奖励
       await useKnexTransaction(async () => {
-        await sendReward(user.id, user.dnfId!, user.dnfBindCharacId, dailyReward)
+        await sendDnfReward(user.id, user.dnfId!, user.dnfBindCharacId, dailyReward)
         if (cumulativeReward) {
-          await sendReward(user.id, user.dnfId!, user.dnfBindCharacId, cumulativeReward)
+          await sendDnfReward(user.id, user.dnfId!, user.dnfBindCharacId, cumulativeReward)
         }
       })
 
