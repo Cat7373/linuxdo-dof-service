@@ -50,7 +50,7 @@ export async function sendDnfReward(uid: number, dnfId: number, characId: number
  * @param characId 角色 ID
  * @param items 物品清单
  */
-export async function sendDnfMail(characId: number, items: Record<number, number>) {
+export async function sendDnfMail(characId: number, items: Record<number | string, number>) {
   for (const itemId in items) {
     const itemCount = items[itemId]
     const endTime = Math.ceil((Date.now() - 1151683200000) / 86400000) + 30

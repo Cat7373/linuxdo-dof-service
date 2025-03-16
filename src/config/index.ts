@@ -41,7 +41,6 @@ const config = {
   },
   // 禁止登录的账号列表
   banList: [
-    { linuxDoUid: 38979, linuxDoName: 'Haru577', dofUid: 18000101, reason: '用喇叭发垃圾信息刷屏，经警告后仍继续', endTime: new Date('2025-03-09T00:00:00Z') },
   ] as Array<BanUser>,
   guildId: 1, // 自动加入的公会 ID
   dnfMailSender: 'LinuxDo', // DNF 中邮件发送人的名字
