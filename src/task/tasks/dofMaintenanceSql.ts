@@ -32,7 +32,7 @@ export const dofMaintenanceSql1m = async () => {
   }
 
   // 欧皇创造计划
-  await useKnex().raw(`UPDATE charac_stat SET luck_point = 50000 + FLOOR(RAND() * 3000) WHERE luck_point < 50000`)
+  await useKnex().raw(`UPDATE taiwan_cain.charac_stat SET luck_point = 50000 + FLOOR(RAND() * 3000) WHERE luck_point < 50000`)
 }
 
 /**
