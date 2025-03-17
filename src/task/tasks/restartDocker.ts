@@ -1,5 +1,6 @@
 import child_process from 'node:child_process'
 import { useKnex } from "../../db/knex.js"
+import { useLog } from '../../util/log.js'
 
 let needRestart = true
 
@@ -22,7 +23,9 @@ export const restartDocker = async () => {
     }
 
     // 执行命令，重启 Docker 容器
+    useLog().info('RestartDocker', '准备重启 DNF 服务')
     child_process.execSync(`docker restart dnf`)
+    useLog().info('RestartDocker', 'DNF 服务重启完成')
 
     // 标记今天已经重启过了
     needRestart = false
