@@ -1,6 +1,7 @@
 import child_process from 'node:child_process'
 import { useKnex } from "../../db/knex.js"
 import { useLog } from '../../util/log.js'
+import { sleep } from '../../util/index.js'
 
 let needRestart = true
 
@@ -16,10 +17,14 @@ export const setNeedRestartFlag = async () => {
  */
 export const restartDocker = async () => {
   if (needRestart) {
-    // 判断服务器是否有人
-    const onlineDnfUserList = (await useKnex().raw(`SELECT * FROM taiwan_login.login_account_3 WHERE login_status = 1`))[0]
-    if (onlineDnfUserList.length > 0) {
-      return // 服务器有人，放弃重启
+    // 连续 60s 无人，才允许重启
+    for (let i = 1; i <= 6; i++) {
+      const onlineDnfUserList = (await useKnex().raw(`SELECT * FROM taiwan_login.login_account_3 WHERE login_status = 1`))[0]
+      if (onlineDnfUserList.length > 0) {
+        return // 服务器有人，放弃重启
+      }
+
+      await sleep(9999)
     }
 
     // 执行命令，重启 Docker 容器
