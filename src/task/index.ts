@@ -2,6 +2,7 @@ import { scheduleJob } from 'node-schedule'
 import { useLog } from '../util/log.js'
 import { clearSignInRecord } from './tasks/clearSignInRecord.js'
 import { dofMaintenanceSql10s, dofMaintenanceSql1m, dofMaintenanceSql10m } from './tasks/dofMaintenanceSql.js'
+import { restartDocker, setNeedRestartFlag } from './tasks/restartDocker.js'
 
 // 防止重入
 const preventReEntryStatus: Map<string, boolean> = new Map()
@@ -39,6 +40,9 @@ export async function useTasks() {
   safeScheduleJob('dofMaintenanceSql10s', '0 * * * * *', dofMaintenanceSql10s)
   safeScheduleJob('dofMaintenanceSql1m', '0 * * * * *', dofMaintenanceSql1m)
   safeScheduleJob('dofMaintenanceSql10m', '0 * * * * *', dofMaintenanceSql10m)
+  // 每 10 分钟一次，若当天还没重启过，且服务器无人，则重启一次 Docker 镜像
+  safeScheduleJob('setNeedRestartFlag', '0 0 0 * * *', setNeedRestartFlag)
+  safeScheduleJob('restartDocker', '0 */10 * * * *', restartDocker)
 
   useLog().info('Task', 'Task register completed.')
 }

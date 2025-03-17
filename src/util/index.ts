@@ -53,7 +53,7 @@ export async function sendDnfReward(uid: number, dnfId: number, characId: number
 export async function sendDnfMail(characId: number, items: Record<number | string, number>) {
   for (const itemId in items) {
     const itemCount = items[itemId]
-    const endTime = Math.ceil((Date.now() - 1151683200000) / 86400000) + 30
+    const endTime = Math.ceil((Date.now() - 1151683200000) / 86400000) + 66
     await useKnex().raw(`INSERT INTO taiwan_cain_2nd.postal (occ_time, send_charac_name, receive_charac_no, item_id, add_info, endurance) VALUES ('${dayjs().format('YYYY-MM-DD HH:mm:ss')}', '${config.dnfMailSender}', ${characId}, ${itemId}, ${itemCount}, ${endTime})`)
   }
 }

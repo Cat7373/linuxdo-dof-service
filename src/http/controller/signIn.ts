@@ -54,7 +54,7 @@ class SignInController {
 
       // 不允许未注册账号的用户签到
       if (!user.dnfId) {
-        return useResult().fail('您未注册过 DNF 账号，无法签到')
+        return useResult().fail('请先注册 DNF 账号，再进行签到')
       }
 
       // 查询签到记录
@@ -62,7 +62,7 @@ class SignInController {
 
       // 判断今天是否已经签到过
       if ((signInRecord?.days as number[])?.includes(day)) {
-        return useResult().fail('您今天已经签到过，请勿重复签到')
+        return useResult().fail('您今天已经签到过了，请明天再来吧')
       }
 
       // 记录签到

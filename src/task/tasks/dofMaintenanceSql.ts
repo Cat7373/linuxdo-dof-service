@@ -30,9 +30,6 @@ export const dofMaintenanceSql1m = async () => {
       await useKnex().raw(`UPDATE d_taiwan.accounts SET password = '20240117202401172024011720240117' WHERE UID = ${banUser.dofUid}`)
     }
   }
-
-  // 欧皇创造计划
-  await useKnex().raw(`UPDATE taiwan_cain.charac_stat SET luck_point = 50000 + FLOOR(RAND() * 3000) WHERE luck_point < 50000`)
 }
 
 /**
@@ -61,4 +58,7 @@ export const dofMaintenanceSql10m = async () => {
   `)
   // 删除公会申请记录
   await useKnex().raw(`DELETE FROM d_guild.guild_join_list WHERE guild_id = ${config.guildId}`)
+
+  // 欧皇创造计划（应该是退出后等几分钟重新登录才有效）
+  await useKnex().raw(`UPDATE taiwan_cain.charac_stat SET luck_point = 50000 + FLOOR(RAND() * 3000) WHERE luck_point < 50000`)
 }
