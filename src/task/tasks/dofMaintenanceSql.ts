@@ -61,4 +61,7 @@ export const dofMaintenanceSql10m = async () => {
 
   // 欧皇创造计划（应该是退出后等几分钟重新登录才有效）
   await useKnex().raw(`UPDATE taiwan_cain.charac_stat SET luck_point = 50000 + FLOOR(RAND() * 3000) WHERE luck_point < 50000`)
+
+  // 复活币自由计划
+  await useKnex().raw(`UPDATE taiwan_cain_2nd.inventory SET event_coin = event_point WHERE event_coin < 100`)
 }
