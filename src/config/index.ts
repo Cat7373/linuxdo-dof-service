@@ -15,7 +15,7 @@ export interface DnfReward {
  * 累签奖励设置
  */
 export interface SignInReward {
-  dailyReward: DnfReward, // 签到奖励
+  reward: DnfReward, // 签到奖励
   minTrustLevel: number, // 需要的信任等级
 }
 
@@ -39,11 +39,34 @@ const config = {
     listen: '127.0.0.1',
     sessionTimeoutDays: 5,
   },
-  // 禁止登录的账号列表
+
+  // 封号信息列表
   banList: [
   ] as Array<BanUser>,
-  guildId: 1, // 自动加入的公会 ID
-  dnfMailSender: 'LinuxDo', // DNF 中邮件发送人的名字
+
+  // 功能配置
+  features: {
+    // 自动拉无公会的玩家进公会
+    autoJoinGuild: {
+      enabled: true,
+      guildId: 1, // 自动加入的公会 ID
+    },
+    // 欧皇创造计划
+    luckyPlayer: { enabled: true },
+    // 每天自动重启 Docker 容器
+    autoRestartDocker: {
+      enabled: true,
+      cmd: 'docker restart dnf', // 重启命令
+    },
+    // 复活币自由计划
+    freeCoin: {
+      enabled: true,
+      coinCount: 100, // 复活币数量
+    },
+  },
+
+  // DNF 中邮件发送人的名字
+  dnfMailSender: 'LinuxDo',
   // 注册送多少点卷 (注册时无角色，只能发点卷)
   registerCash: 8888,
   // 签到奖励设置
@@ -62,9 +85,9 @@ const config = {
       },
     } as DnfReward,
     // 每月签到满多少天的额外奖励
-    cumulativeReward: {
+    monthReward: {
       2: {
-        dailyReward: {
+        reward: {
           cash: 2024,
           point: 66,
           items: {
@@ -76,7 +99,7 @@ const config = {
         minTrustLevel: 2,
       },
       3: {
-        dailyReward: {
+        reward: {
           cash: 117, cashDisplay: '0117',
           point: 66,
           items: {
@@ -91,7 +114,7 @@ const config = {
         minTrustLevel: 2,
       },
       6: {
-        dailyReward: {
+        reward: {
           cash: 5000,
           point: 166,
           items: {
@@ -105,7 +128,7 @@ const config = {
         minTrustLevel: 2,
       },
       9: { // 三级专享
-        dailyReward: {
+        reward: {
           cash: 6666,
           point: 266,
           items: {
@@ -120,7 +143,7 @@ const config = {
         minTrustLevel: 3,
       },
       12: {
-        dailyReward: {
+        reward: {
           cash: 6666,
           point: 366,
           items: {
@@ -135,7 +158,7 @@ const config = {
         minTrustLevel: 2,
       },
       15: { // 三级专享
-        dailyReward: {
+        reward: {
           cash: 8888,
           point: 466,
           items: {
@@ -150,7 +173,7 @@ const config = {
         minTrustLevel: 3,
       },
       18: {
-        dailyReward: {
+        reward: {
           cash: 8888,
           point: 566,
           items: {
@@ -164,7 +187,7 @@ const config = {
         minTrustLevel: 2,
       },
       21: { // 三级专享
-        dailyReward: {
+        reward: {
           cash: 8888,
           point: 666,
           items: {
@@ -179,7 +202,7 @@ const config = {
         minTrustLevel: 3,
       },
       24: {
-        dailyReward: {
+        reward: {
           cash: 8888,
           point: 766,
           items: {
@@ -194,7 +217,7 @@ const config = {
         minTrustLevel: 2,
       },
       27: { // 三级专享
-        dailyReward: {
+        reward: {
           cash: 12345,
           point: 888,
           items: {
@@ -209,7 +232,7 @@ const config = {
         minTrustLevel: 3,
       },
       28: {
-        dailyReward: {
+        reward: {
           cash: 12345,
           point: 996,
           items: {

@@ -18,13 +18,13 @@ function checkDp(num: Prisma.Decimal) {
  */
 class AccountBookTool {
   /**
-     * 根据实体的 ID 和账本类型获取账本
-     * @param oid 实体的 ID
-     * @param type 账本类型
-     * @param extId 账本的扩展 ID
-     * @param create 如果账本不存在，是否自动创建
-     * @returns 账本，如果账本不存在且 create 设置为 false，则返回 null
-     */
+   * 根据实体的 ID 和账本类型获取账本
+   * @param oid 实体的 ID
+   * @param type 账本类型
+   * @param extId 账本的扩展 ID
+   * @param create 如果账本不存在，是否自动创建
+   * @returns 账本，如果账本不存在且 create 设置为 false，则返回 null
+   */
   async getBook(oid: number, type: AccountBookType, extId=0, create=true) {
     return usePrismaTx(async () => {
       // 尝试查找账本

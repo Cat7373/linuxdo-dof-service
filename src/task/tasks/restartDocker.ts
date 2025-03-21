@@ -2,6 +2,7 @@ import child_process from 'node:child_process'
 import { useKnex } from "../../db/knex.js"
 import { useLog } from '../../util/log.js'
 import { sleep } from '../../util/index.js'
+import config from '../../config/index.js'
 
 let needRestart = true
 
@@ -16,7 +17,7 @@ export const setNeedRestartFlag = async () => {
  * 每日自动重启 Docker (每次重启本服务后也会)
  */
 export const restartDocker = async () => {
-  if (needRestart) {
+  if (needRestart && config.features.autoRestartDocker.enabled) {
     // 连续 60s 无人，才允许重启
     for (let i = 1; i <= 6; i++) {
       const onlineDnfUserList = (await useKnex().raw(`SELECT * FROM taiwan_login.login_account_3 WHERE login_status = 1`))[0]

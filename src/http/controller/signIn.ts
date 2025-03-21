@@ -74,20 +74,20 @@ class SignInController {
 
       // 日常签到奖励内容
       const dailyReward = config.signInReward.dailyReward
-      let cumulativeReward: DnfReward | null = null
+      let monthReward: DnfReward | null = null
 
       // 累计签到奖励内容
-      const cumulativeDays = (((signInRecord?.days as number[])?.length || 0) + 1)
-      const cumulativeConf = config.signInReward.cumulativeReward[cumulativeDays]
-      if (cumulativeConf && user.linuxDoTrustLevel >= cumulativeConf.minTrustLevel) {
-        cumulativeReward = cumulativeConf.dailyReward
+      const monthDays = (((signInRecord?.days as number[])?.length || 0) + 1)
+      const monthConf = config.signInReward.monthReward[monthDays]
+      if (monthConf && user.linuxDoTrustLevel >= monthConf.minTrustLevel) {
+        monthReward = monthConf.reward
       }
 
       // 发放签到奖励
       await useKnexTransaction(async () => {
         await sendDnfReward(user.id, user.dnfId!, user.dnfBindCharacId, dailyReward)
-        if (cumulativeReward) {
-          await sendDnfReward(user.id, user.dnfId!, user.dnfBindCharacId, cumulativeReward)
+        if (monthReward) {
+          await sendDnfReward(user.id, user.dnfId!, user.dnfBindCharacId, monthReward)
         }
       })
 
