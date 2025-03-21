@@ -1,4 +1,3 @@
-import koaCors from '@koa/cors'
 import koaSession from 'koa-session'
 import koaBodyParser from 'koa-bodyparser'
 import Koa from 'koa'
@@ -25,8 +24,6 @@ export async function useHttpService() {
   const app = new Koa()
   app.keys = [useEnv().httpSecret]
   app
-    // 允许跨域请求
-    .use(koaCors({ origin: '*', credentials: true }))
     // 参数解析
     .use(koaBodyParser())
     // 使用 Session 储存状态
