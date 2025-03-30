@@ -28,10 +28,13 @@ class FuLiDuiHuanController {
     const uid = useSession(ctx)!.uid
 
     // 商品清单
-    const goods = await usePrisma().fuLiDuiHuanCategory.findMany({
+    const categorys = await usePrisma().fuLiDuiHuanCategory.findMany({
       include: {
-        goods: true,
+        goods: {
+          orderBy: { idx: 'asc' },
+        },
       },
+      orderBy: { idx: 'asc' },
     })
 
     // 今日已兑换次数
@@ -45,7 +48,7 @@ class FuLiDuiHuanController {
     })
 
     // 补充字段
-    for (const category of goods) {
+    for (const category of categorys) {
       for (const good of category.goods) {
         const count = todayCount.find(item => item.goodsId === good.id)?._sum.count ?? 0;
         (good as any).todayCount = count;
@@ -53,7 +56,7 @@ class FuLiDuiHuanController {
     }
 
     // 返回结果
-    return useResult().success(goods)
+    return useResult().success(categorys)
   }
 
   /**
