@@ -93,6 +93,7 @@ class FuLiDuiHuanController {
         _sum: { count: true },
         where: {
           uid,
+          goodsId,
           date: dayjs().format('YYYY-MM-DD'),
         },
       })
