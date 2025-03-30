@@ -121,7 +121,7 @@ class FuLiDuiHuanController {
 
       // 扣款
       await useAccountBookTool().items(uid)
-        .item(AccountBookType.POINT, totalPrice)
+        .item(AccountBookType.POINT, totalPrice.neg())
         .log(String(order.id), AccountLogType.FU_LI_DUI_HUAN_PAY, `${user.linuxDoUsername} 兑换 ${goods.name}`)
 
       // 发货
