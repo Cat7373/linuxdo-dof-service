@@ -32,11 +32,13 @@ class FuLiDuiHuanController {
       where: { show: true },
       include: {
         goods: {
+          select: { id: true, name: true, price: true, limit: true },
           where: { show: true },
           orderBy: { idx: 'asc' },
         },
       },
       orderBy: { idx: 'asc' },
+      omit: { idx: true, show: true },
     })
 
     // 今日已兑换次数
