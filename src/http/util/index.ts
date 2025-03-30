@@ -61,7 +61,7 @@ export function CheckInput(name: string, source: 'path' | 'body', {
       // 非 null 检测
       if (val === null || val === undefined) {
         if (notNull) {
-          return useResult().fail(message || `缺少参数参数 ${name}`)
+          return useResult().fail(message || `缺少参数 ${name}`)
         } else {
           return target.call(controller, ctx) // 已经是空了，后续检测没有意义了
         }
