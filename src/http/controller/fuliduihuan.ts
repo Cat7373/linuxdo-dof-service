@@ -29,8 +29,10 @@ class FuLiDuiHuanController {
 
     // 商品清单
     const categorys = await usePrisma().fuLiDuiHuanCategory.findMany({
+      where: { show: true },
       include: {
         goods: {
+          where: { show: true },
           orderBy: { idx: 'asc' },
         },
       },
@@ -82,7 +84,7 @@ class FuLiDuiHuanController {
 
       // 查出商品
       const goods = await usePrisma().fuLiDuiHuanGoods.findUnique({
-        where: { id: goodsId },
+        where: { id: goodsId, show: true },
       })
       if (!goods) return useResult().fail('商品不存在')
 
