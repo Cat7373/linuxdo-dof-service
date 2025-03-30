@@ -127,7 +127,11 @@ class FuLiDuiHuanController {
 
       // 发货
       await useKnexTransaction(async () => {
-        await sendDnfMail(user.dnfBindCharacId!, goods.items as Record<number, number>)
+        const items = goods.items as Record<number, number>
+        for (const id in items) {
+          items[id] = items[id]! * count
+        }
+        await sendDnfMail(user.dnfBindCharacId!, items)
       })
 
       // 返回结果
