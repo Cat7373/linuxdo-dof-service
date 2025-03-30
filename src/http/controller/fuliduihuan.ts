@@ -97,7 +97,7 @@ class FuLiDuiHuanController {
           date: dayjs().format('YYYY-MM-DD'),
         },
       })
-      if ((todayCount?._sum?.count ?? 0) + count >= goods.limit) {
+      if ((todayCount?._sum?.count ?? 0) + count > goods.limit) {
         return useResult().fail('今日剩余次数不足，无法完成兑换')
       }
 
