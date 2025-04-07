@@ -72,4 +72,9 @@ export const dofMaintenanceSql10m = async () => {
   if (config.features.freeCoin.enabled) {
     await useKnex().raw(`UPDATE taiwan_cain_2nd.inventory SET event_coin = 100 WHERE event_coin < 100`)
   }
+
+  // 自动 1 段
+  if (config.features.auto1st.enabled) {
+    await useKnex().raw(`UPDATE taiwan_cain.pvp_result SET pvp_grade = 10 WHERE pvp_grade < 10`)
+  }
 }

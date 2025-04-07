@@ -63,6 +63,10 @@ const config = {
       enabled: true,
       coinCount: 100, // 复活币数量
     },
+    // 自动 1 段
+    auto1st: {
+      enabled: true,
+    },
   },
 
   // DNF 中邮件发送人的名字
