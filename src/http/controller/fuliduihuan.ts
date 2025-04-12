@@ -68,7 +68,7 @@ class FuLiDuiHuanController {
    * POST /api/fuliduihuan/buy
    */
   @CheckInput('goodsId', 'body', { type: 'number' })
-  @CheckInput('count', 'body', { type: 'number' })
+  @CheckInput('count', 'body', { type: 'number', min: 1 })
   async buy(ctx: Context): Promise<ResultObj<any>> {
     // 处理参数
     const { goodsId, count } = ctx.request.body as BuyBody

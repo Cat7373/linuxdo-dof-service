@@ -6,7 +6,17 @@ import { useLog } from './util/log.js'
 import { initDatabase } from './db/index.js'
 import { initKnex } from './db/knex.js'
 
+// Hook NodeJS
 (BigInt.prototype as any).toJSON = function() { return this.toString() }
+
+// 全局异常处理
+process.on('uncaughtException', (error) => {
+  useLog().error('UncaughtException', error)
+})
+// 全局 Promise.reject 处理
+process.on('unhandledRejection', (reason) => {
+  useLog().error('UnhandledRejection', reason)
+})
 
 // Startup
 await initProdConfig()
